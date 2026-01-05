@@ -133,7 +133,7 @@ export function CreateEventForm() {
 
   return (
     <div className="space-y-8">
-      <EventFormProgress steps={updatedSteps} currentStep={currentStep} />
+      <EventFormProgress steps={updatedSteps} />
       
       <div className="mt-8">
         {currentStep === 0 && (

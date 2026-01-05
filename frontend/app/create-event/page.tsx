@@ -4,7 +4,6 @@ import { useConnection } from 'wagmi'
 import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { toast } from "sonner"
 import { CreateEventForm } from "@/components/events/CreateEventForm"
 
 export default function CreateEvent() {

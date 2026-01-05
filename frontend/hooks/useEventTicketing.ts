@@ -29,7 +29,7 @@ enum Status {
 }
 
 export function useEventTicketingGetters() {
-  const chainId = ChainId.CELO && ChainId.BASE;
+  const chainId = ChainId.CELO || ChainId.BASE;
   
   const { eventTicketing } = getContractAddresses(chainId);
 

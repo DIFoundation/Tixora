@@ -11,11 +11,14 @@ type Step = {
 
 type EventFormProgressProps = {
   steps: Step[]
-  currentStep: number
+  // currentStep: number
   className?: string
 }
 
-export function EventFormProgress({ steps, currentStep, className }: EventFormProgressProps) {
+export function EventFormProgress({ 
+  steps,
+  // currentStep,
+  className }: EventFormProgressProps) {
   return (
     <nav className={cn("w-full", className)} aria-label="Progress">
       <ol role="list" className="flex items-center">
