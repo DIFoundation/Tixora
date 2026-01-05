@@ -42,46 +42,46 @@ export function TicketCard({ ticket, onAction, isLoading = false }: TicketCardPr
   }
 
   return (
-    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow">
+    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow bg-[#1c398e] border-[#51a2ff]/20">
       <div className="relative">
-        <div className="h-40 bg-linear-to-r from-primary/10 to-muted/50 flex items-center justify-center">
-          <div className="text-4xl font-bold text-muted-foreground/30">
+        <div className="h-40 bg-[#1c398e] flex items-center justify-center">
+          <div className="text-4xl font-bold text-[#51a2ff]">
             {ticket.eventTitle.charAt(0).toUpperCase()}
           </div>
         </div>
         <Badge 
           variant={isUpcoming ? "default" : "secondary"} 
-          className="absolute top-2 right-2"
+          className="absolute top-2 right-2 bg-[#51a2ff] hover:bg-[#3a8cff] text-white"
         >
           {isUpcoming ? 'Upcoming' : 'Past'}
         </Badge>
       </div>
       
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl line-clamp-2">{ticket.eventTitle}</CardTitle>
-        <div className="text-sm text-muted-foreground">{ticket.location}</div>
+        <CardTitle className="text-xl text-white line-clamp-2">{ticket.eventTitle}</CardTitle>
+        <div className="text-sm text-[#a1a1a1]">{ticket.location}</div>
       </CardHeader>
       
       <CardContent className="flex-1 space-y-2 text-sm">
-        <div className="flex items-center">
-          <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+        <div className="flex items-center text-white">
+          <Calendar className="mr-2 h-4 w-4 text-[#51a2ff]" />
           <span>{format(eventDate, 'PPP')}</span>
         </div>
-        <div className="flex items-center">
-          <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+        <div className="flex items-center text-white">
+          <Clock className="mr-2 h-4 w-4 text-[#51a2ff]" />
           <span>{format(eventDate, 'p')}</span>
         </div>
-        <div className="flex items-start">
-          <MapPin className="mr-2 h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+        <div className="flex items-start text-white">
+          <MapPin className="mr-2 h-4 w-4 text-[#51a2ff] mt-0.5 shrink-0" />
           <span className="line-clamp-2">{ticket.location}</span>
         </div>
         
         {ticket.txHash && (
-          <div className="pt-2 mt-2 border-t">
+          <div className="pt-2 mt-2 border-t border-[#51a2ff]/20">
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs h-7 px-2"
+              className="text-xs h-7 px-2 text-[#a1a1a1] hover:text-white hover:bg-[#51a2ff]/10"
               onClick={() => window.open(`https://explorer.celo.org/tx/${ticket.txHash}`, '_blank')}
             >
               <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
@@ -91,10 +91,10 @@ export function TicketCard({ ticket, onAction, isLoading = false }: TicketCardPr
         )}
       </CardContent>
       
-      <CardFooter className="justify-between pt-4">
+      <CardFooter className="justify-between pt-4 border-t border-[#51a2ff]/20">
         <div className="text-sm font-medium">
-          <div className="text-muted-foreground text-xs">Price</div>
-          <div>{ticket.price}</div>
+          <div className="text-[#a1a1a1] text-xs">Price</div>
+          <div className="text-white">{ticket.price}</div>
         </div>
         
         <TicketActions 

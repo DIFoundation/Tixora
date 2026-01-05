@@ -48,7 +48,7 @@ export default function ProfilePage() {
   
   // Resolve contract address for current chain
   const { eventTicketing: eventTicketingAddress } = useMemo(() => {
-    const chainId = chain?.id || ChainId.CELO_SEPOLIA
+    const chainId = chain?.id || ChainId.BASE
     return getContractAddresses(chainId)
   }, [chain])
 
@@ -203,75 +203,53 @@ export default function ProfilePage() {
   }), [userTickets])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f172b] via-[#1c398e] to-[#0f172b] text-white">
+      <div className="container mx-auto px-4 py-8">
         <ProfileHeader 
           stats={stats} 
           isLoading={isLoading || isLoadingTickets} 
         />
         
-        <section className="mt-8 space-y-6">
-          <div className="flex flex-col space-y-2">
-            <h2 className="text-2xl font-bold tracking-tight">My Tickets</h2>
-            <p className="text-muted-foreground">Manage and view your event tickets</p>
-          </div>
-          
-          <div className="bg-card rounded-lg border shadow-sm">
-            <TicketList 
-              tickets={userTickets} 
-              isLoading={isLoading || isLoadingTickets}
-              onAction={handleAction}
-            />
-          </div>
-        </section>
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-6">My Tickets</h2>
+          <TicketList 
+            tickets={userTickets} 
+            onAction={handleAction}
+            isLoading={isLoading || isLoadingTickets}
+          />
+        </div>
       </div>
 
       {/* Modals */}
-      <TicketDetailsModal
-        ticket={currentAction === 'view' ? selectedTicket : null}
-        isOpen={currentAction === 'view'}
-        onClose={handleCloseModal}
-      />
-
-      <QrCodeModal
-        ticket={currentAction === 'qr' && selectedTicket 
-          ? {
-              id: selectedTicket.id,
-              eventTitle: selectedTicket.eventTitle,
-              qrCode: selectedTicket.qrCode
-            } 
-          : null
-        }
-        isOpen={currentAction === 'qr'}
-        onClose={handleCloseModal}
-      />
-
-      <TransferTicketModal
-        tokenId={
-          currentAction === 'transfer' && selectedTicket 
-            ? selectedTicket.tokenId 
-            : undefined
-        }
-        isOpen={currentAction === 'transfer'}
-        onClose={handleCloseModal}
-      />
-
-      <ListTicketModal
-        tokenId={
-          currentAction === 'resale' && selectedTicket 
-            ? selectedTicket.tokenId 
-            : undefined
-        }
-        eventName={
-          currentAction === 'resale' && selectedTicket 
-            ? selectedTicket.eventTitle 
-            : ''
-        }
-        isOpen={currentAction === 'resale'}
-        onClose={handleCloseModal}
-        onListSuccess={handleListTicket}
-        isPending={isListing}
-      />
+      {selectedTicket && (
+        <>
+          <TicketDetailsModal
+            isOpen={currentAction === 'view'}
+            onClose={handleCloseModal}
+            ticket={selectedTicket}
+          />
+          
+          <TransferTicketModal
+            isOpen={currentAction === 'transfer'}
+            onClose={handleCloseModal}
+            ticketId={selectedTicket.tokenId}
+          />
+          
+          <QrCodeModal
+            isOpen={currentAction === 'qr'}
+            onClose={handleCloseModal}
+            qrCode={selectedTicket.qrCode}
+            eventName={selectedTicket.eventTitle}
+          />
+          
+          <ListTicketModal
+            isOpen={currentAction === 'resale'}
+            onClose={handleCloseModal}
+            onList={handleListTicket}
+            isLoading={isListing}
+          />
+        </>
+      )}
     </div>
   )
 }
