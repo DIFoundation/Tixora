@@ -119,8 +119,8 @@ export default function Header() {
             rel={link.external ? "noopener noreferrer" : ""}
             className={`block w-full px-4 py-3 text-left text-sm font-medium transition-colors rounded-lg ${
               pathname === link.path
-                ? "text-white bg-[#1c398e]"
-                : "text-[#a1a1a1] hover:bg-[#1c398e]/30"
+                ? "text-white bg-[#51a2ff]"
+                : "text-[#a1a1a1] hover:bg-[#1c398e]"
             }`}
             onClick={() => isMobile && setIsMobileMenuOpen(false)}
           >
@@ -141,7 +141,7 @@ export default function Header() {
     <button
       ref={menuButtonRef}
       onClick={toggleMobileMenu}
-      className="md:hidden p-2 rounded-md text-[#a1a1a1] hover:text-white hover:bg-[#1c398e]/50 focus:outline-none focus:ring-2 focus:ring-[#51a2ff] focus:ring-offset-2 focus:ring-offset-[#0f172b]"
+      className="md:hidden p-2 rounded-md text-[#a1a1a1] hover:text-white hover:bg-[#51a2ff] focus:outline-none focus:ring-2 focus:ring-[#51a2ff] focus:ring-offset-2 focus:ring-offset-[#0f172b] transition-colors"
       aria-expanded={isMobileMenuOpen}
       aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
       style={{
@@ -186,7 +186,7 @@ export default function Header() {
             className="fixed top-0 right-0 w-4/5 max-w-sm h-full bg-[#0f172b] backdrop-blur-lg shadow-2xl z-50 overflow-y-auto md:hidden"
           >
             <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between p-4 border-b border-[#1c398e]/50">
+              <div className="flex items-center justify-between p-4 border-b border-[#1c398e]">
                 <Link 
                   href="/" 
                   className="flex items-center space-x-2"
@@ -268,15 +268,15 @@ export default function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden md:flex items-center justify-center">
             {renderNavLinks()}
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-2">
-            <ThemeToggle />
+          <div className="hidden md:flex items-center justify-center space-x-2">
             <NetworkSwitcher />
             <CustomConnectButton />
+            <ThemeToggle />
           </div>
 
           {/* Mobile Menu Button */}
