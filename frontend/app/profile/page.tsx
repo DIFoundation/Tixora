@@ -13,8 +13,13 @@ import {
   ProfileHeader, 
   TicketList, 
   TicketDetailsModal, 
-  QrCodeModal 
+  QrCodeModal,
+  // Card,
+  // CardHeader,
+  // CardTitle,
+  // CardContent
 } from "@/components/profile"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 export type NFTTicketDisplay = {
   id: string
@@ -47,10 +52,11 @@ export default function ProfilePage() {
   const { data: allTickets = [], isLoading: isLoadingTickets } = useGetRecentTickets()
   
   // Resolve contract address for current chain
+  const chainId = ChainId.CELO || ChainId.BASE
+
   const { eventTicketing: eventTicketingAddress } = useMemo(() => {
-    const chainId = chain?.id || ChainId.BASE
     return getContractAddresses(chainId)
-  }, [chain])
+  }, [chainId])
 
   // Registration status map for quick lookup
   const [registrationMap, setRegistrationMap] = useState<Record<string, boolean>>({})
@@ -89,6 +95,8 @@ export default function ProfilePage() {
     fetchRegistrationStatuses()
   }, [publicClient, address, allTickets, eventTicketingAddress])
 
+  const symbol = chain?.id === ChainId.BASE ? 'ETH' : 'CELO'
+
   // Filter tickets to only include those registered by the user
   const userTickets = useMemo(() => {
     if (!allTickets) return []
@@ -107,12 +115,12 @@ export default function ProfilePage() {
           location: ticket.location,
           status: isPast ? "past" as const : "upcoming" as const,
           qrCode: ticket.id.toString(),
-          price: formatEther(ticket.price) + " CELO",
+          price: formatEther(ticket.price) + " " + symbol,
           purchaseDate: new Date(Number(ticket.eventTimestamp) * 1000).toISOString(),
           txHash: ticketTransactions[ticket.id.toString()] || null,
         } satisfies NFTTicketDisplay
       })
-  }, [allTickets, registrationMap, ticketTransactions])
+  }, [allTickets, registrationMap, ticketTransactions, symbol])
 
   // Fetch transaction hashes for registered tickets
   useEffect(() => {
@@ -203,20 +211,31 @@ export default function ProfilePage() {
   }), [userTickets])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f172b] via-[#1c398e] to-[#0f172b] text-white">
-      <div className="container mx-auto px-4 py-8">
-        <ProfileHeader 
-          stats={stats} 
-          isLoading={isLoading || isLoadingTickets} 
-        />
-        
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-6">My Tickets</h2>
-          <TicketList 
-            tickets={userTickets} 
-            onAction={handleAction}
-            isLoading={isLoading || isLoadingTickets}
+    <div className="min-h-screen bg-[#0f172b] text-foreground pt-12 px-4 md:px-8 lg:px-20">
+      <div className="pb-16 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <ProfileHeader 
+            stats={stats} 
+            isLoading={isLoading || isLoadingTickets} 
+            className="mb-10"
           />
+          
+          <div className="px-2">
+            <Card className="bg-[#1c398e]/10 border-[#1c398e]/30">
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold text-white">
+                  My Tickets
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TicketList 
+                  tickets={userTickets} 
+                  onAction={handleAction}
+                  isLoading={isLoading || isLoadingTickets}
+                />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
