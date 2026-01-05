@@ -33,7 +33,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#0f172b] text-foreground overflow-hidden">
       {/* Hero Section */}
       <section className="py-20 px-4 relative overflow-hidden min-h-screen flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f172b] via-[#1c398e]/20 to-[#0f172b]" />
+        <div className="absolute inset-0 bg-linear-to-br from-[#0f172b] via-[#1c398e]/20 to-[#0f172b]" />
 
         {/* Decorative Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 bg-[#51a2ff]/10 rounded-full animate-float blur-sm" />
@@ -65,7 +65,7 @@ export default function HomePage() {
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="w-full sm:w-auto px-8 py-6 bg-gradient-to-r from-[#51a2ff] to-[#1c398e] hover:from-[#3a8cff] hover:to-[#1c398e] text-white rounded-xl hover:shadow-lg hover:shadow-[#51a2ff]/20 transition-all duration-300"
+                  className="w-full sm:w-auto px-8 py-6 bg-linear-to-r from-[#51a2ff] to-[#1c398e] hover:from-[#3a8cff] hover:to-[#1c398e] text-white rounded-xl hover:shadow-lg hover:shadow-[#51a2ff]/20 transition-all duration-300"
                   onClick={() => scrollToSection("how-it-works")}
                 >
                   <span className="text-lg">Get Started</span>
@@ -83,12 +83,12 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-            <ChevronDown
-              className="h-8 w-8 text-[#a1a1a1] cursor-pointer hover:text-[#51a2ff] transition-colors animate-bounce"
-              onClick={() => scrollToSection("featured-events")}
-            />
-          </div>
+        </div>
+        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
+          <ChevronDown
+            className="h-8 w-8 text-[#a1a1a1] cursor-pointer hover:text-[#51a2ff] transition-colors animate-bounce"
+            onClick={() => scrollToSection("featured-events")}
+          />
         </div>
       </section>
 
@@ -97,7 +97,7 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Featured Events</h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-[#51a2ff] to-[#1c398e] mx-auto rounded-full"></div>
+            <div className="w-20 h-1 bg-linear-to-r from-[#51a2ff] to-[#1c398e] mx-auto rounded-full"></div>
           </div>
           <FeatureEvents />
         </div>
@@ -124,27 +124,27 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <Link 
-                href="https://github.com/DIFoundation/Tixora/blob/main/README.md" 
-                target="_blank" 
+              <Link
+                href="https://github.com/DIFoundation/Tixora/blob/main/README.md"
+                target="_blank"
                 className="text-[#a1a1a1] hover:text-[#51a2ff] transition-colors"
               >
                 Documentation
               </Link>
-              <Link 
-                href="/resources" 
+              <Link
+                href="/resources"
                 className="text-[#a1a1a1] hover:text-[#51a2ff] transition-colors"
               >
                 Resources
               </Link>
-              <Link 
-                href="#" 
+              <Link
+                href="#"
                 className="text-[#a1a1a1] hover:text-[#51a2ff] transition-colors"
               >
                 Support
               </Link>
-              <Link 
-                href="#" 
+              <Link
+                href="#"
                 className="text-[#a1a1a1] hover:text-[#51a2ff] transition-colors"
               >
                 Privacy
