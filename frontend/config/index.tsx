@@ -4,7 +4,7 @@ import { base, celo } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // Get projectId from https://dashboard.reown.com
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'c1362a4b534f96512c03c786cf8314fc'
 
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not defined')

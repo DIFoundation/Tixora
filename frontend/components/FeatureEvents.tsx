@@ -5,9 +5,22 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
 import { Calendar, MapPin, Users } from 'lucide-react'
+import { useConnection} from 'wagmi'
+import { ChainId } from '@/lib/addressAndAbi'
 
 function FeatureEvents() {
   const router = useRouter()
+  const { chain } = useConnection()
+
+  let symbol = ''
+  if (ChainId.BASE === 8453) {
+    symbol = 'ETH'
+  } else if (ChainId.CELO === 42220) {
+    symbol = 'CELO'
+  } else {
+    symbol = 'Unknown network'
+  }
+  console.log('symbol: ', symbol)
 
   // Placeholder data - replace with actual data from your contract
   const featuredEvents = [
@@ -16,7 +29,7 @@ function FeatureEvents() {
       title: 'Blockchain Conference 2024',
       date: 'April 15, 2024',
       location: 'San Francisco, CA',
-      price: '0.1 ETH',
+      price: `0.1 ${symbol}`,
       category: 'Conference',
       ticketsLeft: 42,
       attendees: 1500,
@@ -27,7 +40,7 @@ function FeatureEvents() {
       title: 'NFT Art Exhibition',
       date: 'May 2, 2024',
       location: 'New York, NY',
-      price: '0.05 ETH',
+      price: `0.05 ${symbol}`,
       category: 'Art',
       ticketsLeft: 12,
       attendees: 300,
@@ -38,7 +51,7 @@ function FeatureEvents() {
       title: 'Crypto Music Festival',
       date: 'June 10, 2024',
       location: 'Miami, FL',
-      price: '0.2 ETH',
+      price: `0.2 ${symbol}`,
       category: 'Music',
       ticketsLeft: 87,
       attendees: 5000,
@@ -49,7 +62,7 @@ function FeatureEvents() {
       title: 'Web3 Workshop',
       date: 'July 5, 2024',
       location: 'Online',
-      price: '0.01 ETH',
+      price: `0.01 ${symbol}`,
       category: 'Workshop',
       ticketsLeft: 23,
       attendees: 200,
@@ -73,7 +86,7 @@ function FeatureEvents() {
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 <Badge className="absolute top-3 left-3 bg-[#1c398e] hover:bg-[#1c398e] text-white">
                   {event.category}
@@ -86,21 +99,21 @@ function FeatureEvents() {
               </div>
 
               <CardContent className="p-6 bg-[#0f172b]">
-                <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2 min-h-[3.5rem]">
+                <h3 className="text-lg font-semibold text-white mb-3 line-clamp-2 min-h-14">
                   {event.title}
                 </h3>
 
                 <div className="space-y-2 text-sm text-[#a1a1a9] mb-6">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-[#51a2ff] flex-shrink-0" />
+                    <Calendar className="h-4 w-4 text-[#51a2ff] shrink-0" />
                     <span className="truncate">{event.date}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-[#51a2ff] flex-shrink-0" />
+                    <MapPin className="h-4 w-4 text-[#51a2ff] shrink-0" />
                     <span className="truncate">{event.location}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-[#51a2ff] flex-shrink-0" />
+                    <Users className="h-4 w-4 text-[#51a2ff] shrink-0" />
                     <span>{event.attendees.toLocaleString()} attendees</span>
                   </div>
                 </div>
