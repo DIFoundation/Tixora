@@ -10,7 +10,6 @@ import { TicketSetupStep } from "./steps/TicketSetupStep"
 import { PricingBreakdownStep } from "./steps/PricingBreakdownStep"
 import { ReviewStep } from "./steps/ReviewStep"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 
 type FormData = {
   title: string
@@ -67,7 +66,7 @@ export function CreateEventForm() {
       const price = parseFloat(formData.price)
       const totalSupply = parseInt(formData.totalSupply)
       
-      if (isNaN(price) || price <= 0) {
+      if (isNaN(price) || price < 0) {
         newErrors.price = "Please enter a valid price greater than 0"
       }
       
@@ -134,7 +133,7 @@ export function CreateEventForm() {
 
   return (
     <div className="space-y-8">
-      <EventFormProgress steps={updatedSteps} currentStep={currentStep} />
+      <EventFormProgress steps={updatedSteps} />
       
       <div className="mt-8">
         {currentStep === 0 && (
@@ -156,13 +155,13 @@ export function CreateEventForm() {
         {currentStep === 2 && <PricingBreakdownStep data={formData} />}
         {currentStep === 3 && <ReviewStep data={formData} />}
         
-        <div className="mt-10 flex justify-between border-t border-[#1c398e]/30 pt-6">
+        <div className="mt-10 flex justify-between border-t border-[#a1a1a1]/30 pt-6">
           {currentStep > 0 ? (
             <Button
               type="button"
               onClick={prevStep}
               variant="outline"
-              className="border-[#1c398e]/30 text-[#51a2ff] hover:bg-[#1c398e]/20 hover:border-[#51a2ff]/50"
+              className="border-[#a1a1a1]/30 text-[#51a2ff] hover:bg-[#1c398e]/20 hover:border-[#51a2ff]/50"
               disabled={isPending || isConfirming}
             >
               Back

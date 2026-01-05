@@ -11,11 +11,14 @@ type Step = {
 
 type EventFormProgressProps = {
   steps: Step[]
-  currentStep: number
+  // currentStep: number
   className?: string
 }
 
-export function EventFormProgress({ steps, currentStep, className }: EventFormProgressProps) {
+export function EventFormProgress({ 
+  steps,
+  // currentStep,
+  className }: EventFormProgressProps) {
   return (
     <nav className={cn("w-full", className)} aria-label="Progress">
       <ol role="list" className="flex items-center">
@@ -63,11 +66,11 @@ export function EventFormProgress({ steps, currentStep, className }: EventFormPr
                   <div className="h-0.5 w-full bg-[#1c398e]/30" />
                 </div>
                 <div className="group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#1c398e]/30 bg-[#0f172b] group-hover:border-[#1c398e]/50 transition-colors">
-                  <span className="text-[#a1a1a9] group-hover:text-white">{step.id}</span>
+                  <span className="text-[#a1a1a1] group-hover:text-white">{step.id}</span>
                   <span className="sr-only">{step.name}</span>
                 </div>
                 <div className="mt-2 text-center">
-                  <span className="text-sm font-medium text-[#a1a1a9] group-hover:text-white transition-colors">
+                  <span className="text-sm font-medium text-[#a1a1a1] group-hover:text-white transition-colors">
                     {step.name}
                   </span>
                 </div>

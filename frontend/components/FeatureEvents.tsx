@@ -5,22 +5,14 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
 import { Calendar, MapPin, Users } from 'lucide-react'
-import { useConnection} from 'wagmi'
 import { ChainId } from '@/lib/addressAndAbi'
+import { useConnection } from 'wagmi'
 
 function FeatureEvents() {
   const router = useRouter()
   const { chain } = useConnection()
 
-  let symbol = ''
-  if (ChainId.BASE === 8453) {
-    symbol = 'ETH'
-  } else if (ChainId.CELO === 42220) {
-    symbol = 'CELO'
-  } else {
-    symbol = 'Unknown network'
-  }
-  console.log('symbol: ', symbol)
+  const symbol = chain?.id === ChainId.BASE ? "ETH" : "CELO" 
 
   // Placeholder data - replace with actual data from your contract
   const featuredEvents = [

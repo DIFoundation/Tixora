@@ -2,7 +2,6 @@
 
 import { DollarSign, Percent, CheckCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { ChainId } from "@/lib/addressAndAbi"
 import { useConnection } from "wagmi"
 
 type PricingBreakdownData = {
@@ -25,72 +24,72 @@ export function PricingBreakdownStep({ data, className }: PricingBreakdownStepPr
   const organizerEarnings = totalRevenue - platformFee
 
   const { chain } = useConnection()
-  const symbol = chain?.name === 'BASE' ? 'ETH' : 'CELO'
+  const symbol = chain?.name === 'Base' ? 'ETH' : 'CELO'
 
   return (
     <div className={cn("space-y-8", className)}>
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Pricing Breakdown</h2>
-        <p className="text-muted-foreground">Review the financial details of your event</p>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#1c398e]">Pricing Breakdown</h2>
+        <p className="text-[#a1a1a1]">Review the financial details of your event</p>
       </div>
 
       <div className="space-y-6">
-        <div className="bg-muted/50 rounded-lg p-6 space-y-6">
+        <div className="bg-[#0f172b] rounded-lg p-6 space-y-6 border border-[#a1a1a1]">
           <div className="space-y-4">
-            <h3 className="font-medium">Ticket Information</h3>
+            <h3 className="font-medium text-white">Ticket Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-background p-4 rounded-lg border">
+              <div className="bg-[#1c398e]/10 p-4 rounded-lg border border-[#a1a1a1]">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Price per ticket</span>
-                  <span className="font-medium">{price.toFixed(2)} {chain?.name}</span>
+                  <span className="text-sm text-[#a1a1a1]">Price per ticket</span>
+                  <span className="font-medium text-white">{price.toFixed(2)} {symbol}</span>
                 </div>
               </div>
-              <div className="bg-background p-4 rounded-lg border">
+              <div className="bg-[#1c398e]/10 p-4 rounded-lg border border-[#a1a1a1]">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Number of tickets</span>
-                  <span className="font-medium">{totalSupply}</span>
+                  <span className="text-sm text-[#a1a1a1]">Number of tickets</span>
+                  <span className="font-medium text-white">{totalSupply}</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium">Revenue Breakdown</h3>
+            <h3 className="font-medium text-white">Revenue Breakdown</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span>Total Revenue</span>
+                  <DollarSign className="h-4 w-4 text-[#a1a1a1]" />
+                  <span className="text-white">Total Revenue</span>
                 </div>
-                <span className="font-medium">{totalRevenue.toFixed(2)} CELO</span>
+                <span className="font-medium text-white">{totalRevenue.toFixed(2)} {symbol}</span>
               </div>
               
-              <div className="flex items-center justify-between text-muted-foreground">
+              <div className="flex items-center justify-between text-[#a1a1a1]">
                 <div className="flex items-center gap-2">
-                  <Percent className="h-4 w-4" />
+                  <Percent className="h-4 w-4 text-[#a1a1a1]" />
                   <span>Platform Fee ({PLATFORM_FEE_PERCENTAGE}%)</span>
                 </div>
-                <span>-{platformFee.toFixed(2)} CELO</span>
+                <span className="font-medium text-white">-{platformFee.toFixed(2)} {symbol}</span>
               </div>
               
-              <div className="h-px bg-border my-2" />
+              <div className="h-px bg-[#a1a1a1] my-2" />
               
               <div className="flex items-center justify-between text-green-500 font-medium">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4" />
-                  <span>Your Earnings</span>
+                  <CheckCircle className="h-4 w-4 text-[#51a2ff]" />
+                  <span className="text-white">Your Earnings</span>
                 </div>
-                <span>{organizerEarnings.toFixed(2)} CELO</span>
+                <span className="font-medium text-white">{organizerEarnings.toFixed(2)} {symbol}</span>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-          <p className="text-sm text-blue-700 dark:text-blue-300">
-            The platform fee of {PLATFORM_FEE_PERCENTAGE}% covers payment processing, security, and platform maintenance.
-            The remaining amount goes directly to you as the event organizer.
-          </p>
+          <div className="bg-[#1c398e]/10 p-4 rounded-lg border border-[#a1a1a1]">
+            <p className="text-sm text-[#a1a1a1]">
+              The platform fee of {PLATFORM_FEE_PERCENTAGE}% covers payment processing, security, and platform maintenance.
+              The remaining amount goes directly to you as the event organizer.
+            </p>
+          </div>
         </div>
       </div>
     </div>
