@@ -23,7 +23,7 @@ export function ProfileHeader({ stats, isLoading = false, className }: ProfileHe
   const shortAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''
 
   const StatItem = ({ value, label }: { value: React.ReactNode; label: string }) => (
-    <div className="flex flex-col items-center p-4 bg-[#1c398e] rounded-lg transition-all hover:bg-[#1c398e]/90 border border-[#51a2ff]/20">
+    <div className="flex flex-col items-center p-4 bg-[#1c398e]/10 hover:bg-[#1c398e]/20 rounded-xl border border-[#1c398e]/30 transition-colors">
       <span className="text-2xl font-bold text-[#51a2ff]">{value}</span>
       <span className="text-sm text-[#a1a1a9]">{label}</span>
     </div>
@@ -31,20 +31,20 @@ export function ProfileHeader({ stats, isLoading = false, className }: ProfileHe
 
   if (isLoading) {
     return (
-      <Card className={cn("overflow-hidden border-[#51a2ff]/20 bg-[#1c398e]", className)}>
+      <Card className={cn("overflow-hidden border-[#1c398e]/30 bg-[#1c398e]/10", className)}>
         <CardContent className="p-6">
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-4">
-              <Skeleton className="h-20 w-20 rounded-full bg-[#1c398e]" />
+              <Skeleton className="h-20 w-20 rounded-full bg-[#1c398e]/20" />
               <div className="space-y-2">
-                <Skeleton className="h-6 w-48 bg-[#1c398e]" />
-                <Skeleton className="h-4 w-32 bg-[#1c398e]" />
+                <Skeleton className="h-6 w-48 bg-[#1c398e]/20" />
+                <Skeleton className="h-4 w-32 bg-[#1c398e]/20" />
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-              <Skeleton className="h-20 rounded-lg bg-[#1c398e]" />
-              <Skeleton className="h-20 rounded-lg bg-[#1c398e]" />
-              <Skeleton className="h-20 rounded-lg bg-[#1c398e]" />
+              <Skeleton className="h-20 rounded-lg bg-[#1c398e]/20" />
+              <Skeleton className="h-20 rounded-lg bg-[#1c398e]/20" />
+              <Skeleton className="h-20 rounded-lg bg-[#1c398e]/20" />
             </div>
           </div>
         </CardContent>
@@ -53,12 +53,12 @@ export function ProfileHeader({ stats, isLoading = false, className }: ProfileHe
   }
 
   return (
-    <Card className={cn("overflow-hidden border-[#51a2ff]/20 bg-[#1c398e]", className)}>
+    <Card className={cn("overflow-hidden border-[#1c398e]/30 bg-[#1c398e]/10 backdrop-blur-sm", className)}>
       <CardContent className="p-6">
         <div className="flex flex-col space-y-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
             <div className="relative">
-              <Avatar className="h-20 w-20 ring-2 ring-[#51a2ff] ring-offset-2 ring-offset-[#0f172b]">
+              <Avatar className="h-20 w-20 border-2 border-[#51a2ff]/50">
                 <AvatarImage 
                   src={`https://api.dicebear.com/7.x/identicon/svg?seed=${address}`} 
                   alt="User Avatar"
@@ -71,7 +71,7 @@ export function ProfileHeader({ stats, isLoading = false, className }: ProfileHe
             </div>
             
             <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-2xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-white">
                 My Tickets
               </h1>
               <p className="text-[#a1a1a9] font-mono text-sm mt-1">{shortAddress}</p>
