@@ -51,12 +51,14 @@ export default function ProfilePage() {
   // Fetch all recent tickets
   const { data: allTickets = [], isLoading: isLoadingTickets } = useGetRecentTickets()
   
-  // Resolve contract address for current chain
-  const chainId = ChainId.CELO || ChainId.BASE
+  // Get the current chain from the connected wallet
+  const { chain: connectedChain } = useConnection()
 
   const { eventTicketing: eventTicketingAddress } = useMemo(() => {
+    // Use the connected chain ID, default to CELO if not connected
+    const chainId = connectedChain?.id || ChainId.CELO
     return getContractAddresses(chainId)
-  }, [chainId])
+  }, [connectedChain?.id])
 
   // Registration status map for quick lookup
   const [registrationMap, setRegistrationMap] = useState<Record<string, boolean>>({})
@@ -95,7 +97,7 @@ export default function ProfilePage() {
     fetchRegistrationStatuses()
   }, [publicClient, address, allTickets, eventTicketingAddress])
 
-  const symbol = chain?.id === ChainId.BASE ? 'ETH' : 'CELO'
+  const symbol = connectedChain?.id === ChainId.BASE ? 'ETH' : 'CELO'
 
   // Filter tickets to only include those registered by the user
   const userTickets = useMemo(() => {

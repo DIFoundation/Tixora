@@ -134,109 +134,78 @@ export function CreateEventForm() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-card p-6 rounded-xl border">
-        <EventFormProgress 
-          steps={updatedSteps} 
-          currentStep={currentStep + 1} 
-          className="mb-8" 
-        />
+      <EventFormProgress steps={updatedSteps} currentStep={currentStep} />
+      
+      <div className="mt-8">
+        {currentStep === 0 && (
+          <EventDetailsStep 
+            data={formData} 
+            onChange={updateFormData} 
+            errors={errors} 
+          />
+        )}
         
-        <div className="space-y-6">
-          {currentStep === 0 && (
-            <EventDetailsStep
-              data={{
-                title: formData.title,
-                description: formData.description,
-                date: formData.date,
-                time: formData.time,
-                location: formData.location,
-              }}
-              onChange={updateFormData}
-              errors={errors}
-            />
-          )}
-          
-          {currentStep === 1 && (
-            <TicketSetupStep
-              data={{
-                price: formData.price,
-                totalSupply: formData.totalSupply
-              }}
-              onChange={updateFormData}
-              errors={errors}
-            />
-          )}
-          
-          {currentStep === 2 && (
-            <PricingBreakdownStep
-              data={{
-                price: formData.price,
-                totalSupply: formData.totalSupply
-              }}
-            />
-          )}
-          
-          {currentStep === 3 && (
-            <ReviewStep
-              data={formData}
-              onSubmit={handleSubmit}
-              isSubmitting={isPending || isConfirming}
-            />
-          )}
-
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between pt-6 border-t">
+        {currentStep === 1 && (
+          <TicketSetupStep 
+            data={formData} 
+            onChange={updateFormData} 
+            errors={errors} 
+          />
+        )}
+        
+        {currentStep === 2 && <PricingBreakdownStep data={formData} />}
+        {currentStep === 3 && <ReviewStep data={formData} />}
+        
+        <div className="mt-10 flex justify-between border-t border-[#1c398e]/30 pt-6">
+          {currentStep > 0 ? (
             <Button
               type="button"
-              variant="outline"
               onClick={prevStep}
-              disabled={currentStep === 0 || isPending || isConfirming}
-              className={cn(
-                currentStep === 0 ? 'invisible' : '',
-                "min-w-[100px]"
-              )}
+              variant="outline"
+              className="border-[#1c398e]/30 text-[#51a2ff] hover:bg-[#1c398e]/20 hover:border-[#51a2ff]/50"
+              disabled={isPending || isConfirming}
             >
               Back
             </Button>
-            
-            <div className="flex-1 flex justify-end">
-              {currentStep < steps.length - 1 ? (
-                <Button
-                  type="button"
-                  onClick={nextStep}
-                  disabled={isPending || isConfirming}
-                  className="min-w-[120px]"
-                >
-                  Continue
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isPending || isConfirming}
-                  className="min-w-[160px]"
-                >
-                  {isPending || isConfirming ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Creating Event...
-                    </>
-                  ) : (
-                    'Create Event'
-                  )}
-                </Button>
-              )}
-            </div>
+          ) : (
+            <div />
+          )}
+          
+          <div className="space-x-3">
+            {currentStep < steps.length - 1 ? (
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="bg-[#51a2ff] hover:bg-[#3a8cff] text-white"
+                disabled={isPending || isConfirming}
+              >
+                Continue
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                onClick={handleSubmit}
+                className="bg-[#51a2ff] hover:bg-[#3a8cff] text-white"
+                disabled={isPending || isConfirming}
+              >
+                {isPending || isConfirming ? 'Creating Event...' : 'Create Event'}
+              </Button>
+            )}
           </div>
         </div>
       </div>
       
-      <div className="text-center text-sm text-muted-foreground">
-        <p>Step {currentStep + 1} of {steps.length} • All information can be edited later</p>
-      </div>
+      {error && (
+        <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+          {error.message || 'An error occurred while creating the event. Please try again.'}
+        </div>
+      )}
+      
+      {isConfirmed && (
+        <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-300 text-sm">
+          Event created successfully! Redirecting to your event...
+        </div>
+      )}
     </div>
   )
 }
