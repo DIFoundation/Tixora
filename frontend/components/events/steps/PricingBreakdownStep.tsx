@@ -2,6 +2,8 @@
 
 import { DollarSign, Percent, CheckCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ChainId } from "@/lib/addressAndAbi"
+import { useConnection } from "wagmi"
 
 type PricingBreakdownData = {
   price: string
@@ -22,6 +24,9 @@ export function PricingBreakdownStep({ data, className }: PricingBreakdownStepPr
   const platformFee = (totalRevenue * PLATFORM_FEE_PERCENTAGE) / 100
   const organizerEarnings = totalRevenue - platformFee
 
+  const { chain } = useConnection()
+  const symbol = chain?.name === 'BASE' ? 'ETH' : 'CELO'
+
   return (
     <div className={cn("space-y-8", className)}>
       <div>
@@ -37,7 +42,7 @@ export function PricingBreakdownStep({ data, className }: PricingBreakdownStepPr
               <div className="bg-background p-4 rounded-lg border">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Price per ticket</span>
-                  <span className="font-medium">{price.toFixed(2)} CELO</span>
+                  <span className="font-medium">{price.toFixed(2)} {chain?.name}</span>
                 </div>
               </div>
               <div className="bg-background p-4 rounded-lg border">
