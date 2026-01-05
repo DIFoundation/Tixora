@@ -1,7 +1,6 @@
 import { Card } from "@/components/ui/card"
-import { Ticket, Shield, Zap, Globe, RefreshCw, Star, ArrowRight, Wallet, QrCode } from "lucide-react"
+import { Ticket, Shield, Zap, RefreshCw, Star, Wallet, QrCode } from "lucide-react"
 import { motion } from "framer-motion"
-import { Button } from "./ui/button"
 
 export function WorkAndBenefits() {
   const steps = [
@@ -102,7 +101,7 @@ export function WorkAndBenefits() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card className="h-full p-6 bg-[#1c398e]/10 border-[#1c398e]/30 hover:border-[#51a2ff]/50 transition-all duration-300 group-hover:-translate-y-1">
-                <div className={`w-12 h-12 rounded-xl mb-6 flex items-center justify-center bg-gradient-to-br ${step.gradient} shadow-lg`}>
+                <div className={`w-12 h-12 rounded-xl mb-6 flex items-center justify-center bg-linear-to-br ${step.gradient} shadow-lg`}>
                   {step.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
@@ -111,7 +110,7 @@ export function WorkAndBenefits() {
                 </p>
               </Card>
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-1/2 right-0 -mr-3 w-6 h-0.5 bg-gradient-to-r from-[#1c398e]/30 to-[#51a2ff]/30 group-hover:from-[#1c398e] group-hover:to-[#51a2ff] transition-all duration-300"></div>
+                <div className="hidden lg:block absolute top-1/2 right-0 -mr-3 w-6 h-0.5 bg-linear-to-r from-[#1c398e]/30 to-[#51a2ff]/30 group-hover:from-[#1c398e] group-hover:to-[#51a2ff] transition-all duration-300"></div>
               )}
             </motion.div>
           ))}

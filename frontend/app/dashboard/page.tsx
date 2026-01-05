@@ -33,7 +33,7 @@ export default function Dashboard() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const tickets = recentTicketsData as any[]
 
-    const price = chainId === ChainId.BASE || chainId === ChainId.BASE_SEPOLIA ? "BASE" : "CELO"
+    const price = chainId === ChainId.BASE ? "BASE" : "CELO"
     
     return tickets
       .filter(ticket => ticket.creator.toLowerCase() === address.toLowerCase())
