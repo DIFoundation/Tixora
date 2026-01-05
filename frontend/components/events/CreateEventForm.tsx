@@ -10,7 +10,6 @@ import { TicketSetupStep } from "./steps/TicketSetupStep"
 import { PricingBreakdownStep } from "./steps/PricingBreakdownStep"
 import { ReviewStep } from "./steps/ReviewStep"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 
 type FormData = {
   title: string
@@ -67,7 +66,7 @@ export function CreateEventForm() {
       const price = parseFloat(formData.price)
       const totalSupply = parseInt(formData.totalSupply)
       
-      if (isNaN(price) || price <= 0) {
+      if (isNaN(price) || price < 0) {
         newErrors.price = "Please enter a valid price greater than 0"
       }
       

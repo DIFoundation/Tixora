@@ -64,7 +64,7 @@ export function TicketSetupStep({ data, onChange, errors = {}, className }: Tick
           </div>
           {errors.price && <p className="text-sm text-destructive mt-1">{errors.price}</p>}
           <p className="text-xs text-[#a1a1a1] mt-1">
-            Price is in CELO. 1 CELO = 1.00 {symbol}
+            Price is in {symbol}. 1 {symbol} = 1.00 {symbol}
           </p>
         </div>
 
