@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { useConnection, usePublicClient } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { formatEther } from 'viem'
 import { toast } from "sonner"
 import { useEventTicketingGetters } from "@/hooks/useEventTicketing"
@@ -14,12 +14,17 @@ import {
   TicketList, 
   TicketDetailsModal, 
   QrCodeModal,
-  // Card,
-  // CardHeader,
-  // CardTitle,
-  // CardContent
 } from "@/components/profile"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { parseAbiItem } from 'viem'
+import { createPublicClient, http } from 'viem'
+import { base, celo } from 'viem/chains'
+ 
+export const publicClient = createPublicClient({
+
+  chain: base || celo,
+  transport: http("https://base-mainnet.g.alchemy.com/v2/3v_hKHYxum5Uzvp0j1Zwy")
+})
 
 export type NFTTicketDisplay = {
   id: string
@@ -42,8 +47,8 @@ export default function ProfilePage() {
   const [currentAction, setCurrentAction] = useState<TicketAction | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const { isConnected, address, chain } = useConnection()
-  const publicClient = usePublicClient()
+  const { address } = useConnection()
+  // const publicClient = usePublicClient()
   
   const { useGetRecentTickets } = useEventTicketingGetters()
   const { listTicket, isPending: isListing, isConfirmed: isListingConfirmed } = useResaleMarketSetters()
@@ -95,7 +100,7 @@ export default function ProfilePage() {
     }
 
     fetchRegistrationStatuses()
-  }, [publicClient, address, allTickets, eventTicketingAddress])
+  }, [address, allTickets, eventTicketingAddress])
 
   const symbol = connectedChain?.id === ChainId.BASE ? 'ETH' : 'CELO'
 
@@ -136,16 +141,35 @@ export default function ProfilePage() {
       
       for (const ticket of registeredTickets) {
         try {
+          // const logs = await publicClient.getLogs({
+          //   address: eventTicketingAddress as `0x${string}`,
+          //   event: {
+          //     type: 'event',
+          //     name: 'Registered',
+          //     inputs: [
+          //       { type: 'uint256', indexed: true, name: 'ticketId' },
+          //       { type: 'address', indexed: true, name: 'registrant' },
+          //       { type: 'uint256', indexed: false, name: 'nftTokenId' }
+          //     ]
+          //   },
+          //   args: {
+          //     ticketId: BigInt(ticket.id),
+          //     registrant: address as `0x${string}`
+          //   },
+          //   fromBlock: 'earliest',
+          //   toBlock: 'latest'
+          // })
+
           const logs = await publicClient.getLogs({
             address: eventTicketingAddress as `0x${string}`,
-            event: {
+            event: { 
               type: 'event',
-              name: 'Registered',
+              name: 'Registered', 
               inputs: [
                 { type: 'uint256', indexed: true, name: 'ticketId' },
                 { type: 'address', indexed: true, name: 'registrant' },
                 { type: 'uint256', indexed: false, name: 'nftTokenId' }
-              ]
+              ] 
             },
             args: {
               ticketId: BigInt(ticket.id),
@@ -173,7 +197,7 @@ export default function ProfilePage() {
     }
 
     fetchTransactionHashes()
-  }, [allTickets, registrationMap, publicClient, address, eventTicketingAddress])
+  }, [allTickets, registrationMap, address, eventTicketingAddress])
 
   // Handle listing confirmation
   useEffect(() => {
@@ -226,7 +250,7 @@ export default function ProfilePage() {
             <Card className="bg-[#1c398e]/10 border-[#1c398e]/30">
               <CardHeader>
                 <CardTitle className="text-xl font-semibold text-white">
-                  My Tickets
+                  My Tickets 11111111111111
                 </CardTitle>
               </CardHeader>
               <CardContent>
