@@ -32,11 +32,11 @@ export function TicketList({ tickets, isLoading = false, onAction }: TicketListP
     })
   }, [tickets, searchQuery, activeTab])
 
-  const stats = {
-    totalTickets: tickets.length,
-    upcomingEvents: tickets.filter(t => t.status === 'upcoming').length,
-    pastEvents: tickets.filter(t => t.status === 'past').length,
-  }
+  // const stats = {
+  //   totalTickets: tickets.length,
+  //   upcomingEvents: tickets.filter(t => t.status === 'upcoming').length,
+  //   pastEvents: tickets.filter(t => t.status === 'past').length,
+  // }
 
   return (
     <div className="space-y-6">

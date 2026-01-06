@@ -1,6 +1,6 @@
 "use client"
 
-import { X, Calendar, MapPin, ExternalLink, Copy } from "lucide-react"
+import { Calendar, MapPin, ExternalLink, Copy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
@@ -31,10 +31,6 @@ export function TicketDetailsModal({ ticket, isOpen, onClose }: TicketDetailsMod
         <DialogHeader>
           <div className="flex justify-between items-center">
             <DialogTitle className="text-2xl">Ticket Details</DialogTitle>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-5 w-5" />
-              <span className="sr-only">Close</span>
-            </Button>
           </div>
         </DialogHeader>
 
