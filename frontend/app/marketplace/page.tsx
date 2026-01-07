@@ -55,11 +55,11 @@ export default function Marketplace() {
   const [activeTab, setActiveTab] = useState("upcoming")
   const [events, setEvents] = useState<MarketplaceEvent[]>([])
   const [loading, setLoading] = useState(true)
-  const chainId = chain?.id || ChainId.CELO_SEPOLIA;
-  const { eventTicketing } = getContractAddresses(chainId)
+  const chainId = chain?.id;
+  const { eventTicketing } = getContractAddresses(chainId as number)
   
   // Check if user is on the correct network
-  const isCorrectNetwork = chainId === ChainId.CELO_SEPOLIA || ChainId.BASE_SEPOLIA || ChainId.BASE || ChainId.CELO
+  const isCorrectNetwork = chainId === ChainId.BASE || chainId === ChainId.CELO
 
   // Read contract data
   const { data: totalTickets, error: totalTicketsError } = useReadContract({
@@ -116,7 +116,7 @@ export default function Marketplace() {
         return {
           id: Number(ticket.id),
           eventTitle: ticket.eventName,
-          price: `${formatEther(ticket.price)} ${chainId === ChainId.CELO_SEPOLIA || chainId === ChainId.CELO ? "CELO" : "ETH"}`,
+          price: `${formatEther(ticket.price)} ${chainId === ChainId.CELO ? "CELO" : "ETH"}`,
           date: eventDate.toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'short', 
@@ -138,13 +138,6 @@ export default function Marketplace() {
       setLoading(false)
     }
   }, [chainId, recentTickets])
-
-  // Redirect to landing page if wallet is not connected
-  if (!isConnected) {
-    toast.error("Please connect your wallet to access the marketplace")
-    router.push("/")
-    return null
-  }
 
   const getEventsByTab = () => {
     let filteredEvents = events
@@ -202,6 +195,38 @@ export default function Marketplace() {
   }
 
   const filteredEvents = getEventsByTab()
+
+  const renderConnectWalletPrompt = () => (
+    <div className="text-center py-12">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+        <svg
+          className="h-6 w-6 text-blue-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+          />
+        </svg>
+      </div>
+      <h3 className="mt-2 text-sm font-medium text-gray-900">Connect your wallet</h3>
+      <p className="mt-1 text-sm text-gray-500">
+        Connect your wallet to create events or purchase tickets
+      </p>
+      <div className="mt-6">
+        <Button
+          onClick={() => router.push('/')}
+          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Connect Wallet
+        </Button>
+      </div>
+    </div>
+  )
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900/10 to-slate-900 text-foreground px-20">
@@ -374,7 +399,13 @@ export default function Marketplace() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {filteredEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
+                  <EventCard key={event.id} event={event} onViewDetails={() => router.push(`/marketplace/${event.id}`)} onPurchase={() => {
+                    if (!isConnected) {
+                      toast.info('Please connect your wallet to purchase tickets');
+                      return;
+                    }
+                    router.push(`/marketplace/${event.id}`);
+                  }} />
                 ))}
               </div>
             </div>
@@ -409,12 +440,16 @@ export default function Marketplace() {
                 <Card className="bg-slate-800/30 border-slate-600/50 max-w-lg mx-auto mt-8">
                   <CardContent className="p-6">
                     <p className="text-slate-400 mb-4">Be the first to create an event!</p>
-                    <Button
-                      onClick={() => router.push("/create-event")}
-                      className="bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
-                    >
-                      Create Event
-                    </Button>
+                    {isConnected ? (
+                      <Button
+                        onClick={() => router.push("/create-event")}
+                        className="bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                      >
+                        Create Event
+                      </Button>
+                    ) : (
+                      renderConnectWalletPrompt()
+                    )}
                   </CardContent>
                 </Card>
               )}

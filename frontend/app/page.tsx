@@ -6,13 +6,9 @@ import FeatureEvents from "../components/FeatureEvents"
 import Link from "next/link"
 import Image from "next/image"
 import { WorkAndBenefits } from "@/components/WorkAndBenefits"
-import { useRouter } from "next/navigation"
-import { useConnection } from "wagmi"
 
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false)
-  const router = useRouter();
-  const { isConnected } = useConnection();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -25,10 +21,6 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsVisible(true)
   }, [])
-
-  if (isConnected) {
-    router.push('/dashboard')
-  }
 
   return (
     <div className="min-h-screen bg-[#0f172b] text-foreground overflow-hidden">
