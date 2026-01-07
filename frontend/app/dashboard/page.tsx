@@ -1,20 +1,18 @@
 "use client"
 
 import { useConnection } from "wagmi"
-import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, ShoppingBag, TicketIcon, Activity } from "lucide-react"
 import Link from "next/link"
-import { useMemo, useEffect } from "react"
+import { useMemo } from "react"
 import { Address, formatEther } from "viem"
 import { ChainId, eventTicketingAbi, getContractAddresses } from "@/lib/addressAndAbi"
 import { useReadContract } from "wagmi"
 import Statistics from "@/components/Statistics"
 
 export default function Dashboard() {
-  const { address, isConnected, chain } = useConnection()
-  const router = useRouter()
+  const { address, chain } = useConnection()
 
   const chainId = chain?.id || ChainId.BASE;
   const { eventTicketing } = getContractAddresses(chainId)
@@ -52,13 +50,6 @@ export default function Dashboard() {
       }))
   }, [recentTicketsData, address, chainId])
 
-  // Redirect if not connected
-  useEffect(() => {
-    if (!isConnected) {
-      router.push("/")
-    }
-  }, [isConnected, router])
-
   const shortAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ""
 
   const quickActions = [
@@ -84,10 +75,6 @@ export default function Dashboard() {
       gradient: "from-[#51a2ff] to-[#1c398e]",
     },
   ]
-
-  if (!isConnected) {
-    return null // Will redirect
-  }
 
   return (
     <div className="min-h-screen bg-[#0f172b] text-foreground pt-12 px-4 md:px-8 lg:px-20">

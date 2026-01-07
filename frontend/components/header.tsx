@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { CustomConnectButton } from './CustomConnectButton'
 
 const navLinks = [
-  { name: "Dashboard", path: "/dashboard", requiresAuth: true },
+  { name: "Dashboard", path: "/dashboard", requiresAuth: false },
   { name: "Profile", path: "/profile", requiresAuth: true },
   { name: "Create Event", path: "/create-event", requiresAuth: true },
   { name: "Marketplace", path: "/marketplace", requiresAuth: false },
