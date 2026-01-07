@@ -42,8 +42,7 @@ export const CONTRACT_ADDRESSES: ContractAddresses = {
 export function getContractAddresses(chainId: number) {
   const addresses = CONTRACT_ADDRESSES[chainId as ChainId];
   if (!addresses) {
-    return CONTRACT_ADDRESSES[ChainId.BASE]
-    // throw new Error(`No contract addresses configured for chain ID: ${chainId}`);
+    throw new Error(`No contract addresses configured for chain ID: ${chainId}. Supported chains: ${Object.values(ChainId).filter(v => typeof v === 'number').join(', ')}`);
   }
   return addresses;
 }

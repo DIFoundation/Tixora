@@ -55,11 +55,11 @@ export default function Marketplace() {
   const [activeTab, setActiveTab] = useState("upcoming")
   const [events, setEvents] = useState<MarketplaceEvent[]>([])
   const [loading, setLoading] = useState(true)
-  const chainId = chain?.id || ChainId.CELO_SEPOLIA;
-  const { eventTicketing } = getContractAddresses(chainId)
+  const chainId = chain?.id;
+  const { eventTicketing } = getContractAddresses(chainId as number)
   
   // Check if user is on the correct network
-  const isCorrectNetwork = chainId === ChainId.CELO_SEPOLIA || ChainId.BASE_SEPOLIA || ChainId.BASE || ChainId.CELO
+  const isCorrectNetwork = chainId === ChainId.BASE || chainId === ChainId.CELO
 
   // Read contract data
   const { data: totalTickets, error: totalTicketsError } = useReadContract({
@@ -116,7 +116,7 @@ export default function Marketplace() {
         return {
           id: Number(ticket.id),
           eventTitle: ticket.eventName,
-          price: `${formatEther(ticket.price)} ${chainId === ChainId.CELO_SEPOLIA || chainId === ChainId.CELO ? "CELO" : "ETH"}`,
+          price: `${formatEther(ticket.price)} ${chainId === ChainId.CELO ? "CELO" : "ETH"}`,
           date: eventDate.toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'short', 
