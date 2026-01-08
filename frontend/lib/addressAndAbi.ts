@@ -1,8 +1,8 @@
 // Supported chains
 export enum ChainId {
   BASE = 8453,
-  // BASE_SEPOLIA = 84532,
   CELO = 42220,
+  // BASE_SEPOLIA = 84532,
   // CELO_SEPOLIA = 11142220,
 }
 
