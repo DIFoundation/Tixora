@@ -56,11 +56,18 @@ export default function Marketplace() {
   const [events, setEvents] = useState<MarketplaceEvent[]>([])
   const [loading, setLoading] = useState(true)
   const chainId = chain?.id;
-  const { eventTicketing } = getContractAddresses(chainId as number)
+
+  console.log('chain:', chain)
+  
+  // Get contract addresses only if chainId is available
+  const contractAddresses = chainId ? getContractAddresses(chainId) : null;
+  const eventTicketing = contractAddresses?.eventTicketing;
   
   // Check if user is on the correct network
-  const isCorrectNetwork = chainId === ChainId.BASE || chainId === ChainId.CELO
+  // const isCorrectNetwork = chainId === ChainId.BASE || chainId === ChainId.CELO;
+  const isCorrectNetwork = chainId === 8453 || chainId === 42220;
 
+  console.info('chainId: ', chainId)
   // Read contract data
   const { data: totalTickets, error: totalTicketsError } = useReadContract({
     address: eventTicketing as Address,
@@ -254,8 +261,8 @@ export default function Marketplace() {
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-54w-4 text-orange-400 shrink-0" />
                     <div>
-                      <p className="text-orange-200 font-medium text-base">Wrong Network</p>
-                      <p className="text-orange-300 text-xs">Please switch to Celo or Base to interact with events.</p>
+                      <p className="text-orange-200 font-medium text-base">{!isConnected ? `Connect Wallet` : `Wrong Network`}</p>
+                      <p className="text-orange-300 text-xs">{!isConnected ? `Connect your wallet to interact with events.` : `Please switch to Celo or Base to interact with events.`}</p>
                     </div>
                   </div>
                 </CardContent>
