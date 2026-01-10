@@ -40,7 +40,7 @@ export function TicketSetupStep({ data, onChange, errors = {}, className }: Tick
   return (
     <div className={cn("space-y-6", className)}>
       <div>
-        <h2 className="text-xl font-semibold tracking-tight text-[#1c398e]">Ticket Information</h2>
+        <h2 className="text-xl font-semibold tracking-tight text-[#51a2ff]">Ticket Information</h2>
         <p className="text-sm text-[#a1a1a1]">Set up your ticket types and pricing</p>
       </div>
 

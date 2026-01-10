@@ -36,7 +36,7 @@ export function ReviewStep({ data, className }: ReviewStepProps) {
   return (
     <div className={cn("space-y-8", className)}>
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold tracking-tight text-[#1c398e]">
+        <h2 className="text-2xl font-bold tracking-tight text-[#51a2ff]">
           Review Your Event
         </h2>
         <p className="text-[#a1a1a1]">
@@ -51,7 +51,7 @@ export function ReviewStep({ data, className }: ReviewStepProps) {
             {/* Event Header */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#1c398e]">{data.title}</h3>
+                <h3 className="text-xl font-bold text-[#51a2ff]">{data.title}</h3>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#51a2ff]/10 text-[#51a2ff]">
                   Draft
                 </span>

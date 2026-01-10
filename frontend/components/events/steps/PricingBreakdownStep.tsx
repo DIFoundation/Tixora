@@ -29,7 +29,7 @@ export function PricingBreakdownStep({ data, className }: PricingBreakdownStepPr
   return (
     <div className={cn("space-y-8", className)}>
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight text-[#1c398e]">Pricing Breakdown</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-[#51a2ff]">Pricing Breakdown</h2>
         <p className="text-[#a1a1a1]">Review the financial details of your event</p>
       </div>
 
