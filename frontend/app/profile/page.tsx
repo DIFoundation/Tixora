@@ -250,7 +250,7 @@ export default function ProfilePage() {
             <Card className="bg-[#1c398e]/10 border-[#1c398e]/30">
               <CardHeader>
                 <CardTitle className="text-xl font-semibold text-white">
-                  My Tickets 11111111111111
+                  My Tickets
                 </CardTitle>
               </CardHeader>
               <CardContent>

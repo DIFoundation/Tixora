@@ -192,8 +192,6 @@ export function CreateEventForm() {
             )}
           </div>
         </div>
-      </div>
-      
       {error && (
         <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
           {error.message || 'An error occurred while creating the event. Please try again.'}
@@ -205,6 +203,8 @@ export function CreateEventForm() {
           Event created successfully! Redirecting to your event...
         </div>
       )}
+      </div>
+      
     </div>
   )
 }

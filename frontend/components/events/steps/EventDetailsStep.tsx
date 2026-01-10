@@ -29,7 +29,7 @@ export function EventDetailsStep({ data, onChange, errors = {}, className }: Eve
   return (
     <div className={cn("space-y-6", className)}>
       <div>
-        <h2 className="text-xl font-semibold tracking-tight text-[#1c398e]">Event Information</h2>
+        <h2 className="text-xl font-semibold tracking-tight text-[#51a2ff]">Event Information</h2>
         <p className="text-sm text-[#a1a1a1]">Tell us about your event</p>
       </div>
 
