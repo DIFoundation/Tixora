@@ -7,14 +7,17 @@ import Image from 'next/image'
 import { Calendar, MapPin, Users } from 'lucide-react'
 import { ChainId } from '@/lib/addressAndAbi'
 import { useConnection } from 'wagmi'
+import { useEventTicketingGetters } from '@/hooks/useEventTicketing'
 
 function FeatureEvents() {
   const router = useRouter()
   const { chain } = useConnection()
+  const { useGetTotalTickets } = useEventTicketingGetters()
 
   const symbol = chain?.id === ChainId.BASE ? "ETH" : "CELO" 
 
   // Placeholder data - replace with actual data from your contract
+  const {} = useEventTicketingGetters
   const featuredEvents = [
     {
       id: 1,
