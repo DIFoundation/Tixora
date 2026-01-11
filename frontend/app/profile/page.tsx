@@ -2,24 +2,23 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { useConnection } from 'wagmi'
-import { formatEther } from 'viem'
+import { formatEther, keccak256, toBytes } from 'viem'
 import { toast } from "sonner"
 import { useEventTicketingGetters } from "@/hooks/useEventTicketing"
 import { useResaleMarketSetters } from "@/hooks/useResaleMarket"
 import { getContractAddresses, ChainId, eventTicketingAbi } from "@/lib/addressAndAbi"
 import { ListTicketModal } from "@/components/list-ticket-modal"
 import { TransferTicketModal } from "@/components/transfer-ticket-modal"
-import { 
-  ProfileHeader, 
-  TicketList, 
-  TicketDetailsModal, 
+import {
+  ProfileHeader,
+  TicketList,
+  TicketDetailsModal,
   QrCodeModal,
 } from "@/components/profile"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { parseAbiItem } from 'viem'
 import { createPublicClient, http } from 'viem'
 import { base, celo } from 'viem/chains'
- 
+
 export const publicClient = createPublicClient({
 
   chain: base || celo,
@@ -49,13 +48,18 @@ export default function ProfilePage() {
 
   const { address } = useConnection()
   // const publicClient = usePublicClient()
-  
-  const { useGetRecentTickets } = useEventTicketingGetters()
+
+  const {
+    useGetRecentTickets,
+    // useGetRegistrants, 
+    // useGetStatus, 
+    // useTicketsLeft 
+  } = useEventTicketingGetters()
   const { listTicket, isPending: isListing, isConfirmed: isListingConfirmed } = useResaleMarketSetters()
-  
+
   // Fetch all recent tickets
   const { data: allTickets = [], isLoading: isLoadingTickets } = useGetRecentTickets()
-  
+
   // Get the current chain from the connected wallet
   const { chain: connectedChain } = useConnection()
 
@@ -75,10 +79,10 @@ export default function ProfilePage() {
 
       try {
         const results = await Promise.allSettled(
-          allTickets.map((t: any) =>
+          allTickets.map((t) =>
             publicClient.readContract({
               address: eventTicketingAddress as `0x${string}`,
-              abi: eventTicketingAbi as any,
+              abi: eventTicketingAbi,
               functionName: 'isRegistered',
               args: [BigInt(t.id), address as `0x${string}`],
             })
@@ -104,13 +108,59 @@ export default function ProfilePage() {
 
   const symbol = connectedChain?.id === ChainId.BASE ? 'ETH' : 'CELO'
 
+  const ETHERSCAN_API = "https://api.etherscan.io/v2/api"
+  const CHAIN_ID = connectedChain?.id === ChainId.BASE ? 8453 : 42220
+
+  useEffect(() => {
+    if (!address || !eventTicketingAddress) return
+
+    const fetchTicketTxHashes = async () => {
+      try {
+        const options = { method: 'GET' };
+        const res = await fetch(
+          `${ETHERSCAN_API}?apikey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY}&chainid=${CHAIN_ID}&module=account&action=txlist&address=${eventTicketingAddress}`,
+          options
+        )
+
+        const data = await res.json()
+
+        console.log('data:', data.result);
+
+        if (data.status === '1' && Array.isArray(data.result)) {
+          // Create a map of ticket IDs to transaction hashes
+          const txMap: Record<string, string> = {}
+          data.result.forEach((tx: any) => {
+            // Assuming the ticket ID is in the input data or you can extract it from the transaction
+            // You might need to adjust this based on how your contract emits events
+            if (tx.to?.toLowerCase() === eventTicketingAddress?.toLowerCase()) {
+              // This is a simplified example - you'll need to extract the actual ticket ID from the transaction
+              // For now, we'll just use the transaction hash for the first ticket as an example
+              const ticketId = Object.keys(registrationMap)[0] // This is just an example
+              if (ticketId) {
+                txMap[ticketId] = tx.hash
+              }
+            }
+          })
+          setTicketTransactions(txMap)
+        }
+
+
+      } catch (error) {
+        console.error('Error fetching ticket tx hashes:', error)
+      }
+    }
+    fetchTicketTxHashes()
+  }, [address, eventTicketingAddress, CHAIN_ID, registrationMap])
+
+  // ====================================
+
   // Filter tickets to only include those registered by the user
   const userTickets = useMemo(() => {
     if (!allTickets) return []
 
     return allTickets
-      .filter((ticket: any) => registrationMap[ticket.id.toString()] === true)
-      .map((ticket: any) => {
+      .filter((ticket) => registrationMap[ticket.id.toString()] === true)
+      .map((ticket) => {
         const now = Math.floor(Date.now() / 1000)
         const isPast = Number(ticket.eventTimestamp) < now
 
@@ -123,81 +173,14 @@ export default function ProfilePage() {
           status: isPast ? "past" as const : "upcoming" as const,
           qrCode: ticket.id.toString(),
           price: formatEther(ticket.price) + " " + symbol,
-          purchaseDate: new Date(Number(ticket.eventTimestamp) * 1000).toISOString(),
-          txHash: ticketTransactions[ticket.id.toString()] || null,
-        } satisfies NFTTicketDisplay
-      })
-  }, [allTickets, registrationMap, ticketTransactions, symbol])
-
-  // Fetch transaction hashes for registered tickets
-  useEffect(() => {
-    const fetchTransactionHashes = async () => {
-      if (!allTickets || !publicClient || !address || !eventTicketingAddress) {
-        return
-      }
-
-      const registeredTickets = allTickets.filter((t: any) => registrationMap[t.id.toString()] === true)
-      const txHashes: Record<string, string> = {}
-      
-      for (const ticket of registeredTickets) {
-        try {
-          // const logs = await publicClient.getLogs({
-          //   address: eventTicketingAddress as `0x${string}`,
-          //   event: {
-          //     type: 'event',
-          //     name: 'Registered',
-          //     inputs: [
-          //       { type: 'uint256', indexed: true, name: 'ticketId' },
-          //       { type: 'address', indexed: true, name: 'registrant' },
-          //       { type: 'uint256', indexed: false, name: 'nftTokenId' }
-          //     ]
-          //   },
-          //   args: {
-          //     ticketId: BigInt(ticket.id),
-          //     registrant: address as `0x${string}`
-          //   },
-          //   fromBlock: 'earliest',
-          //   toBlock: 'latest'
-          // })
-
-          const logs = await publicClient.getLogs({
-            address: eventTicketingAddress as `0x${string}`,
-            event: { 
-              type: 'event',
-              name: 'Registered', 
-              inputs: [
-                { type: 'uint256', indexed: true, name: 'ticketId' },
-                { type: 'address', indexed: true, name: 'registrant' },
-                { type: 'uint256', indexed: false, name: 'nftTokenId' }
-              ] 
-            },
-            args: {
-              ticketId: BigInt(ticket.id),
-              registrant: address as `0x${string}`
-            },
-            fromBlock: 'earliest',
-            toBlock: 'latest'
-          })
-          
-          if (logs.length > 0) {
-            const latestLog = logs[logs.length - 1]
-            txHashes[ticket.id.toString()] = latestLog.transactionHash
-          } else {
-            const mockTxHash = `0x${ticket.id.toString().padStart(64, '0')}`
-            txHashes[ticket.id.toString()] = mockTxHash
-          }
-        } catch (error) {
-          console.error(`Failed to fetch transaction for ticket ${ticket.id}:`, error)
-          const mockTxHash = `0x${ticket.id.toString().padStart(64, '0')}`
-          txHashes[ticket.id.toString()] = mockTxHash
+          purchaseDate: new Date(Number(ticket.eventTimestamp) * 1000).toLocaleDateString(),
+          txHash: ticketTransactions[ticket.id.toString()] || null
         }
-      }
-      
-      setTicketTransactions(txHashes)
-    }
+      })
+  }, [allTickets, registrationMap, symbol, ticketTransactions])
 
-    fetchTransactionHashes()
-  }, [allTickets, registrationMap, address, eventTicketingAddress])
+
+  // ====================================
 
   // Handle listing confirmation
   useEffect(() => {
@@ -218,7 +201,7 @@ export default function ProfilePage() {
 
   const handleListTicket = async (price: bigint) => {
     if (!selectedTicket) return
-    
+
     try {
       await listTicket(selectedTicket.tokenId, price)
       toast.success('Ticket listed for resale successfully!')
@@ -240,12 +223,12 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#0f172b] text-foreground pt-12 px-4 md:px-8 lg:px-20">
       <div className="pb-16 px-4">
         <div className="container mx-auto max-w-7xl">
-          <ProfileHeader 
-            stats={stats} 
-            isLoading={isLoading || isLoadingTickets} 
+          <ProfileHeader
+            stats={stats}
+            isLoading={isLoading || isLoadingTickets}
             className="mb-10"
           />
-          
+
           <div className="px-2">
             <Card className="bg-[#1c398e]/10 border-[#1c398e]/30">
               <CardHeader>
@@ -254,8 +237,8 @@ export default function ProfilePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <TicketList 
-                  tickets={userTickets} 
+                <TicketList
+                  tickets={userTickets}
                   onAction={handleAction}
                   isLoading={isLoading || isLoadingTickets}
                 />
@@ -273,20 +256,20 @@ export default function ProfilePage() {
             onClose={handleCloseModal}
             ticket={selectedTicket}
           />
-          
+
           <TransferTicketModal
             isOpen={currentAction === 'transfer'}
             onClose={handleCloseModal}
             ticketId={selectedTicket.tokenId}
           />
-          
+
           <QrCodeModal
             isOpen={currentAction === 'qr'}
             onClose={handleCloseModal}
             qrCode={selectedTicket.qrCode}
             eventName={selectedTicket.eventTitle}
           />
-          
+
           <ListTicketModal
             isOpen={currentAction === 'resale'}
             onClose={handleCloseModal}
