@@ -115,7 +115,7 @@ export default function ProfilePage() {
           options
         )
         const data = await res.json()
-        console.log('Fetched transactions:', data.result);
+        // console.log('Fetched transactions:', data.result);
 
         if (data.status === '1' && Array.isArray(data.result)) {
           const txMap: Record<string, string> = {}
@@ -135,7 +135,7 @@ export default function ProfilePage() {
                 // Only add if we have this ticket in our registration map
                 if (ticketId && registrationMap[ticketId]) {
                   txMap[ticketId] = tx.hash;
-                  console.log(`Mapped ticket ${ticketId} to tx ${tx.hash}`);
+                  // console.log(`Mapped ticket ${ticketId} to tx ${tx.hash}`);
                 }
               } catch (error) {
                 console.error('Error processing transaction:', tx.hash, error);
@@ -143,7 +143,7 @@ export default function ProfilePage() {
             }
           }
           
-          console.log('Final transaction map:', txMap);
+          // console.log('Final transaction map:', txMap);
           setTicketTransactions(prev => ({
             ...prev,
             ...txMap

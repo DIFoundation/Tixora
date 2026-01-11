@@ -11,7 +11,6 @@ import { useEventTicketingGetters } from "@/hooks/useEventTicketing"
 import { toast } from "react-toastify"
 import dynamic from 'next/dynamic'
 
-
 // Lazy load the SelfVerification component to avoid SSR issues
 const SelfVerification = dynamic(
   () => import('@/components/SelfVerification').then((mod) => mod.default),
@@ -19,7 +18,7 @@ const SelfVerification = dynamic(
 )
 
 interface MarketplaceEvent {
-  id: number
+  id: number | bigint
   eventTitle: string
   price: string
   date: string
@@ -63,21 +62,21 @@ export function EventCard({ event }: EventCardProps) {
 
   const getStatusBadge = (event: MarketplaceEvent) => {
     if (event.status === "passed") {
-      return <Badge className="bg-gray-500 text-white">Passed</Badge>
+      return <Badge className="bg-[#a1a1a9] text-[#0f172b] hover:bg-[#a1a1a9]/90">Passed</Badge>
     }
     if (event.status === "canceled") {
-      return <Badge className="bg-red-500 text-white">Canceled</Badge>
+      return <Badge className="bg-red-500/90 text-white hover:bg-red-600">Canceled</Badge>
     }
     if (event.status === "closed" || event.status === "sold_out") {
-      return <Badge className="bg-orange-500 text-white">Sold Out</Badge>
+      return <Badge className="bg-[#1c398e]/90 text-white hover:bg-[#1c398e]">Sold Out</Badge>
     }
     
     // Add urgency indicator for low ticket counts
     if (event.ticketsLeft <= 5) {
-      return <Badge className="bg-red-500 text-white animate-pulse">{event.ticketsLeft} left</Badge>
+      return <Badge className="bg-red-500/90 text-white animate-pulse hover:bg-red-600">{event.ticketsLeft} left</Badge>
     }
     
-    return <Badge className="bg-purple-500 text-white">{event.ticketsLeft} left</Badge>
+    return <Badge className="bg-[#1c398e]/90 text-white hover:bg-[#1c398e]">{event.ticketsLeft} left</Badge>
   }
 
   const handleVerificationSuccess = () => {
@@ -232,150 +231,114 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <Card 
+      className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/10 border-[#1c398e]/30 bg-[#192545] hover:border-[#51a2ff]/50"
       onClick={handleCardClick}
-      className="group cursor-pointer bg-slate-800/50 border-slate-700 hover:border-purple-500/50 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/10"
     >
-      <CardContent className="p-0 h-full flex flex-col">
-        <div className="relative h-40 overflow-hidden rounded-t-lg">
-          <Image
-            src="/web3-music-festival-lights.png"
-            alt={event.eventTitle}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            // onError={() => setImageError(true)}
-            priority={false}
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
-          <Badge className="absolute top-3 left-3 text-xs bg-blue-600/90 backdrop-blur-sm border border-blue-500/50">
-            {event.category}
-          </Badge>
-          
-          <div className="absolute top-3 right-3">
-            {getStatusBadge(event)}
-          </div>
-          
-          {event.trending && (
-            <Badge className="absolute bottom-3 left-3 text-xs bg-linear-to-r from-orange-500 to-red-500 text-white animate-pulse">
-              Trending
-            </Badge>
-          )}
+      <div className="relative h-48 overflow-hidden">
+        <Image
+          src={event.image || "/web3-music-festival-lights.png"}
+          alt={event.eventTitle}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0f172b]/90 via-transparent to-transparent" />
+        
+        <div className="absolute top-3 right-3 z-10">
+          {getStatusBadge(event)}
         </div>
+        
+        {event.category && (
+          <div className="absolute top-3 left-3 z-10">
+            <Badge className="bg-[#1c398e] text-white hover:bg-[#1c398e]/90">
+              {event.category}
+            </Badge>
+          </div>
+        )}
+      </div>
 
-        <div className="p-4 flex-1 flex flex-col">
-          <h3 className="text-lg font-semibold mb-2 text-white line-clamp-2 group-hover:text-purple-300 transition-colors">
+      <CardContent className="p-4 space-y-3">
+        <div>
+          <h3 className="font-semibold text-white text-lg line-clamp-2 h-14">
             {event.eventTitle}
           </h3>
-
-          <div className="space-y-2 text-xs text-slate-400 mb-2">
-            <div className="flex items-center gap-2">
-              <Clock className="h-3 w-3 text-purple-400 shrink-0" />
-              <span className="truncate">{formatEventDate(event.date)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-3 w-3 text-blue-400 shrink-0" />
-              <span className="truncate">{event.location}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="h-3 w-3 text-purple-400 shrink-0" />
-              <span>{event.attendees.toLocaleString()} attendees</span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between mt-auto pt-2 border-t border-slate-700/50">
-            <span className="text-base font-bold bg-purple-400 bg-clip-text text-transparent">
-              {event.price}
-            </span>
-            
-            {event.status === "upcoming" && event.ticketsLeft > 0 ? (
-              checkingRegistration ? (
-                <Button className="bg-slate-600 text-slate-300" disabled size="sm">
-                  <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                  Checking...
-                </Button>
-              ) : isRegistered ? (
-                <Button className="bg-green-600 hover:bg-green-700 text-white" disabled size="sm">
-                  <Ticket className="h-3 w-3 mr-1" />
-                  Registered
-                </Button>
-              ) : !isCorrectNetwork ? (
-                <Button 
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                  onClick={handleNetworkSwitch}
-                  size="sm"
-                >
-                  Wrong Network
-                </Button>
-              ) : (
-                <Button
-                  className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 hover:shadow-lg hover:shadow-purple-500/25"
-                  onClick={handlePurchaseClick}
-                  disabled={isProcessing}
-                  size="sm"
-                >
-                  {isProcessing ? (
-                    <>
-                      <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      {isConfirming ? "Confirming..." : "Processing..."}
-                    </>
-                  ) : (
-                    <>
-                      <Ticket className="h-3 w-3 mr-1" />
-                      Buy Now
-                    </>
-                  )}
-                </Button>
-              )
-            ) : (
-              <Button
-                className="bg-slate-600 text-slate-300 cursor-not-allowed text-sm"
-                disabled
-                size="sm"
-              >
-                <Ticket className="h-3 w-3 mr-1" />
-                {event.status === "passed" ? "Event Ended" : 
-                 event.status === "canceled" ? "Canceled" : 
-                 event.status === "closed" || event.status === "sold_out" ? "Sold Out" : "Unavailable"}
-              </Button>
-            )}
+          <div className="flex items-center text-[#a1a1a9] text-sm mt-1">
+            <Clock className="w-4 h-4 mr-1" />
+            <span>{new Date(event.date).toLocaleDateString('en-US', {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</span>
           </div>
         </div>
-        <SelfVerification
-          open={showVerification}
-          onOpenChange={setShowVerification}
-          onVerificationSuccess={handleVerificationSuccess}
-          onVerificationError={(error) => {
-            console.error('Verification error:', error)
-            toast.error('Identity verification failed. Please try again.')
-          }}
-        />
+        
+        <div className="flex items-center text-[#a1a1a9] text-sm">
+          <MapPin className="w-4 h-4 mr-1 shrink-0" />
+          <span className="truncate">{event.location}</span>
+        </div>
+        
+        <div className="flex items-center text-[#a1a1a9] text-sm">
+          <Users className="w-4 h-4 mr-1" />
+          <span>{event.attendees.toLocaleString()} attendees</span>
+        </div>
+        
+        <div className="flex items-center justify-between pt-2 border-t border-[#1c398e]/50">
+          <div className="flex flex-col">
+            <span className="text-sm text-[#a1a1a9]">Price</span>
+            <span className="font-bold text-white">{event.price} {price}</span>
+          </div>
+          
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              handlePurchaseClick(e)
+            }}
+            disabled={isProcessing || event.status !== 'upcoming' || event.ticketsLeft === 0}
+            className={`bg-linear-to-r from-[#1c398e] to-[#51a2ff] hover:from-[#1c398e]/90 hover:to-[#51a2ff]/90 text-white px-4 py-2 rounded-lg transition-all duration-300 ${
+              (isProcessing || event.status !== 'upcoming' || event.ticketsLeft === 0) 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'hover:shadow-lg hover:shadow-[#51a2ff]/20'
+            }`}
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : event.status !== 'upcoming' ? (
+              'Event ' + event.status
+            ) : event.ticketsLeft === 0 ? (
+              'Sold Out'
+            ) : (
+              'Get Ticket'
+            )}
+          </Button>
+        </div>
       </CardContent>
-
-      {/* Self Verification Modal */}
-      {/* {showVerification && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-semibold mb-4">Identity Verification Required</h3>
-            <p className="mb-4 text-gray-600">
-              To purchase tickets, please verify your identity using the Self app.
+      
+      {showVerification && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0f172b] border border-[#1c398e]/50 rounded-xl p-6 max-w-md w-full">
+            <h3 className="text-xl font-semibold text-white mb-4">Verify Your Identity</h3>
+            <p className="text-[#a1a1a9] mb-6">
+              To prevent fraud, we require identity verification before purchasing tickets.
             </p>
-            <SelfVerification 
-              onVerificationSuccess={handleVerificationSuccess}
-              onVerificationError={handleVerificationError}
-            />
-            <Button 
-              onClick={() => {
+            <SelfVerification onSuccess={handleVerificationSuccess} />
+            <Button
+              variant="outline"
+              onClick={(e) => {
+                e.stopPropagation()
                 setShowVerification(false)
                 setPurchasing(false)
-              }} 
-              variant="outline" 
-              className="mt-4 w-full"
+              }}
+              className="mt-4 w-full border-[#1c398e] text-[#a1a1a9] hover:bg-[#1c398e]/20 hover:border-[#51a2ff] hover:text-white"
             >
               Cancel
             </Button>
           </div>
         </div>
-      )} */}
+      )}
     </Card>
   )
 }
