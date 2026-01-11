@@ -4,13 +4,21 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useConnection, useReadContract } from 'wagmi'
-import { Search, TrendingUp, Clock, Calendar, Users, Sparkles, AlertCircle } from "lucide-react"
+import { 
+  Search, 
+  TrendingUp, 
+  Clock, 
+  // Calendar, 
+  // Users, 
+  // Sparkles, 
+  AlertCircle 
+} from "lucide-react"
 import { ChainId, eventTicketingAbi, getContractAddresses } from "@/lib/addressAndAbi"
 import { Address, formatEther } from "viem"
 import { EventCard } from "@/components/event-card"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 
 interface TicketData {
@@ -48,7 +56,7 @@ interface MarketplaceEvent {
 }
 
 export default function Marketplace() {
-  const router = useRouter()
+  // const router = useRouter()
   const { isConnected, chain } = useConnection()
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState("trending")
@@ -57,7 +65,7 @@ export default function Marketplace() {
   const [loading, setLoading] = useState(true)
   const chainId = chain?.id;
 
-  console.log('chain:', chain)
+  // console.log('chain:', chain)
   
   // Get contract addresses only if chainId is available
   const contractAddresses = chainId ? getContractAddresses(chainId) : null;
@@ -69,7 +77,10 @@ export default function Marketplace() {
 
   console.info('chainId: ', chainId)
   // Read contract data
-  const { data: totalTickets, error: totalTicketsError } = useReadContract({
+  const { 
+    // data: totalTickets, 
+    error: totalTicketsError 
+  } = useReadContract({
     address: eventTicketing as Address,
     abi: eventTicketingAbi,
     functionName: 'getTotalTickets',
@@ -203,37 +214,37 @@ export default function Marketplace() {
 
   const filteredEvents = getEventsByTab()
 
-  const renderConnectWalletPrompt = () => (
-    <div className="text-center py-12">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1c398e]/30 mb-4">
-        <svg
-          className="h-8 w-8 text-[#51a2ff]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-          />
-        </svg>
-      </div>
-      <h3 className="text-lg font-medium text-white">Connect your wallet</h3>
-      <p className="mt-2 text-[#a1a1a9]">
-        Connect your wallet to create events or purchase tickets
-      </p>
-      <div className="mt-6">
-        <Button
-          onClick={() => router.push('/')}
-          className="bg-linear-to-r from-[#1c398e] to-[#51a2ff] hover:from-[#1c398e]/90 hover:to-[#51a2ff]/90 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/20"
-        >
-          Connect Wallet
-        </Button>
-      </div>
-    </div>
-  )
+  // const renderConnectWalletPrompt = () => (
+  //   <div className="text-center py-12">
+  //     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1c398e]/30 mb-4">
+  //       <svg
+  //         className="h-8 w-8 text-[#51a2ff]"
+  //         fill="none"
+  //         viewBox="0 0 24 24"
+  //         stroke="currentColor"
+  //       >
+  //         <path
+  //           strokeLinecap="round"
+  //           strokeLinejoin="round"
+  //           strokeWidth={2}
+  //           d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+  //         />
+  //       </svg>
+  //     </div>
+  //     <h3 className="text-lg font-medium text-white">Connect your wallet</h3>
+  //     <p className="mt-2 text-[#a1a1a9]">
+  //       Connect your wallet to create events or purchase tickets
+  //     </p>
+  //     <div className="mt-6">
+  //       <Button
+  //         onClick={() => router.push('/')}
+  //         className="bg-linear-to-r from-[#1c398e] to-[#51a2ff] hover:from-[#1c398e]/90 hover:to-[#51a2ff]/90 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/20"
+  //       >
+  //         Connect Wallet
+  //       </Button>
+  //     </div>
+  //   </div>
+  // )
 
   return (
     <div className="min-h-screen bg-[#0f172b] text-white">

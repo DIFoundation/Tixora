@@ -9,13 +9,14 @@ import { useWriteContract, useWaitForTransactionReceipt, useConnection, useBalan
 import { ChainId, eventTicketingAbi, getContractAddresses } from "@/lib/addressAndAbi"
 import { useEventTicketingGetters } from "@/hooks/useEventTicketing"
 import { toast } from "react-toastify"
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
+import SelfVerification from '@/components/SelfVerification'
 
 // Lazy load the SelfVerification component to avoid SSR issues
-const SelfVerification = dynamic(
-  () => import('@/components/SelfVerification').then((mod) => mod.default),
-  { ssr: false }
-)
+// const SelfVerification = dynamic(
+//   () => import('@/components/SelfVerification').then((mod) => mod.default),
+//   { ssr: false }
+// )
 
 interface MarketplaceEvent {
   id: number | bigint
@@ -52,7 +53,10 @@ export function EventCard({ event }: EventCardProps) {
   const { useIsRegistered } = useEventTicketingGetters()
   const { data: currentBalance } = useBalance()
   
-  const { isLoading: checkingRegistration, data: isRegistered } = useIsRegistered(BigInt(event.id), address)
+  const { 
+    // isLoading: checkingRegistration, 
+    data: isRegistered 
+  } = useIsRegistered(BigInt(event.id), address)
   
   const { isLoading: isConfirming, isSuccess, error: receiptError } = useWaitForTransactionReceipt({
     hash,
@@ -192,7 +196,7 @@ export function EventCard({ event }: EventCardProps) {
   }, [receiptError])
 
   // Check if user is on the correct network
-  const isCorrectNetwork = chainId === ChainId.BASE || ChainId.CELO
+  // const isCorrectNetwork = chainId === ChainId.BASE || ChainId.CELO
 
   const isProcessing = purchasing || isPending || isConfirming
 
@@ -204,34 +208,34 @@ export function EventCard({ event }: EventCardProps) {
     router.push(`/marketplace/${event.id}`)
   }
 
-  const handleNetworkSwitch = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    toast.error(`Please switch to ${price} Sepolia testnet ${chainId === ChainId.BASE ? "Base" : "Celo"} to purchase tickets`)
-  }
+  // const handleNetworkSwitch = (e: React.MouseEvent) => {
+  //   e.stopPropagation()
+  //   toast.error(`Please switch to ${price} Sepolia testnet ${chainId === ChainId.BASE ? "Base" : "Celo"} to purchase tickets`)
+  // }
 
-  const formatEventDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString)
-      const now = new Date()
-      const diffTime = date.getTime() - now.getTime()
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  // const formatEventDate = (dateString: string) => {
+  //   try {
+  //     const date = new Date(dateString)
+  //     const now = new Date()
+  //     const diffTime = date.getTime() - now.getTime()
+  //     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
       
-      if (diffDays === 0) {
-        return "Today"
-      } else if (diffDays === 1) {
-        return "Tomorrow"
-      } else if (diffDays > 0 && diffDays <= 7) {
-        return `In ${diffDays} days`
-      }
-      return dateString
-    } catch {
-      return dateString
-    }
-  }
+  //     if (diffDays === 0) {
+  //       return "Today"
+  //     } else if (diffDays === 1) {
+  //       return "Tomorrow"
+  //     } else if (diffDays > 0 && diffDays <= 7) {
+  //       return `In ${diffDays} days`
+  //     }
+  //     return dateString
+  //   } catch {
+  //     return dateString
+  //   }
+  // }
 
   return (
     <Card 
-      className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/10 border-[#1c398e]/30 bg-[#192545] hover:border-[#51a2ff]/50"
+      className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/10 border-[#1c398e]/50 bg-[#060910] hover:border-[#51a2ff]/50"
       onClick={handleCardClick}
     >
       <div className="relative h-48 overflow-hidden">
@@ -311,7 +315,9 @@ export function EventCard({ event }: EventCardProps) {
             ) : event.ticketsLeft === 0 ? (
               'Sold Out'
             ) : (
-              'Get Ticket'
+              <>
+                <Ticket /> Get Ticket
+              </>
             )}
           </Button>
         </div>
@@ -324,7 +330,12 @@ export function EventCard({ event }: EventCardProps) {
             <p className="text-[#a1a1a9] mb-6">
               To prevent fraud, we require identity verification before purchasing tickets.
             </p>
-            <SelfVerification onSuccess={handleVerificationSuccess} />
+            <SelfVerification 
+              open={showVerification} 
+              onOpenChange={setShowVerification} 
+              onVerificationSuccess={handleVerificationSuccess} 
+              // onVerificationError={handleVerificationError} 
+            />
             <Button
               variant="outline"
               onClick={(e) => {
