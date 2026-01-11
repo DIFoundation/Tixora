@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { useConnection } from 'wagmi'
-import { formatEther, keccak256, toBytes } from 'viem'
+import { formatEther } from 'viem'
 import { toast } from "sonner"
 import { useEventTicketingGetters } from "@/hooks/useEventTicketing"
 import { useResaleMarketSetters } from "@/hooks/useResaleMarket"
@@ -16,14 +16,7 @@ import {
   QrCodeModal,
 } from "@/components/profile"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { createPublicClient, http } from 'viem'
-import { base, celo } from 'viem/chains'
-
-export const publicClient = createPublicClient({
-
-  chain: base || celo,
-  transport: http("https://base-mainnet.g.alchemy.com/v2/3v_hKHYxum5Uzvp0j1Zwy")
-})
+import { usePublicClient } from "wagmi"
 
 export type NFTTicketDisplay = {
   id: string
@@ -47,7 +40,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true)
 
   const { address } = useConnection()
-  // const publicClient = usePublicClient()
+  const publicClient = usePublicClient()
 
   const {
     useGetRecentTickets,
@@ -104,7 +97,7 @@ export default function ProfilePage() {
     }
 
     fetchRegistrationStatuses()
-  }, [address, allTickets, eventTicketingAddress])
+  }, [address, allTickets, eventTicketingAddress, publicClient])
 
   const symbol = connectedChain?.id === ChainId.BASE ? 'ETH' : 'CELO'
 
@@ -121,36 +114,47 @@ export default function ProfilePage() {
           `${ETHERSCAN_API}?apikey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY}&chainid=${CHAIN_ID}&module=account&action=txlist&address=${eventTicketingAddress}`,
           options
         )
-
         const data = await res.json()
-
-        console.log('data:', data.result);
+        // console.log('Fetched transactions:', data.result);
 
         if (data.status === '1' && Array.isArray(data.result)) {
-          // Create a map of ticket IDs to transaction hashes
           const txMap: Record<string, string> = {}
-          data.result.forEach((tx: any) => {
-            // Assuming the ticket ID is in the input data or you can extract it from the transaction
-            // You might need to adjust this based on how your contract emits events
-            if (tx.to?.toLowerCase() === eventTicketingAddress?.toLowerCase()) {
-              // This is a simplified example - you'll need to extract the actual ticket ID from the transaction
-              // For now, we'll just use the transaction hash for the first ticket as an example
-              const ticketId = Object.keys(registrationMap)[0] // This is just an example
-              if (ticketId) {
-                txMap[ticketId] = tx.hash
+          
+          for (const tx of data.result) {
+            // Check if this is a transaction to our contract
+            if (tx.to?.toLowerCase() !== eventTicketingAddress?.toLowerCase()) continue;
+
+            // Check if this is a register transaction (function selector 0xf207564e)
+            if (tx.input.startsWith('0xf207564e')) {
+              try {
+                // The ticketId is the first parameter after the function selector
+                // For function register(uint256 tier), the ticketId is in the first 32 bytes after the selector
+                const ticketIdHex = tx.input.slice(10, 74); // 10 = 2 (0x) + 8 (function selector)
+                const ticketId = parseInt(ticketIdHex, 16).toString();
+                
+                // Only add if we have this ticket in our registration map
+                if (ticketId && registrationMap[ticketId]) {
+                  txMap[ticketId] = tx.hash;
+                  // console.log(`Mapped ticket ${ticketId} to tx ${tx.hash}`);
+                }
+              } catch (error) {
+                console.error('Error processing transaction:', tx.hash, error);
               }
             }
-          })
-          setTicketTransactions(txMap)
+          }
+          
+          // console.log('Final transaction map:', txMap);
+          setTicketTransactions(prev => ({
+            ...prev,
+            ...txMap
+          }));
         }
-
-
       } catch (error) {
-        console.error('Error fetching ticket tx hashes:', error)
+        console.error('Error fetching ticket tx hashes:', error);
       }
-    }
+    };
     fetchTicketTxHashes()
-  }, [address, eventTicketingAddress, CHAIN_ID, registrationMap])
+  }, [address, eventTicketingAddress, CHAIN_ID, registrationMap, ticketTransactions])
 
   // ====================================
 
@@ -193,6 +197,11 @@ export default function ProfilePage() {
     setSelectedTicket(ticket)
     setCurrentAction(action)
   }
+  const handleActionWrapper = (action: string, ticket: NFTTicketDisplay) => {
+    if (['view', 'transfer', 'qr', 'resale'].includes(action)) {
+      handleAction(action as TicketAction, ticket);
+    }
+  };
 
   const handleCloseModal = () => {
     setSelectedTicket(null)
@@ -239,7 +248,7 @@ export default function ProfilePage() {
               <CardContent>
                 <TicketList
                   tickets={userTickets}
-                  onAction={handleAction}
+                  onAction={handleActionWrapper}
                   isLoading={isLoading || isLoadingTickets}
                 />
               </CardContent>
@@ -260,7 +269,10 @@ export default function ProfilePage() {
           <TransferTicketModal
             isOpen={currentAction === 'transfer'}
             onClose={handleCloseModal}
-            ticketId={selectedTicket.tokenId}
+            ticketId={selectedTicket.id}
+            eventName={selectedTicket.eventTitle}
+            isActive={true}
+            onTransferSuccess={handleCloseModal}
           />
 
           <QrCodeModal
@@ -271,8 +283,11 @@ export default function ProfilePage() {
           />
 
           <ListTicketModal
+            // tokenId={selectedTicket.tokenId}
             isOpen={currentAction === 'resale'}
             onClose={handleCloseModal}
+            // eventName={selectedTicket.eventTitle}
+            // onListSuccess={handleCloseModal}
             onList={handleListTicket}
             isLoading={isListing}
           />

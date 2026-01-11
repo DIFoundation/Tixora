@@ -4,13 +4,21 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useConnection, useReadContract } from 'wagmi'
-import { Search, TrendingUp, Clock, Calendar, Users, Sparkles, AlertCircle } from "lucide-react"
+import { 
+  Search, 
+  TrendingUp, 
+  Clock, 
+  // Calendar, 
+  // Users, 
+  // Sparkles, 
+  AlertCircle 
+} from "lucide-react"
 import { ChainId, eventTicketingAbi, getContractAddresses } from "@/lib/addressAndAbi"
 import { Address, formatEther } from "viem"
 import { EventCard } from "@/components/event-card"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 
 interface TicketData {
@@ -48,7 +56,7 @@ interface MarketplaceEvent {
 }
 
 export default function Marketplace() {
-  const router = useRouter()
+  // const router = useRouter()
   const { isConnected, chain } = useConnection()
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState("trending")
@@ -57,7 +65,7 @@ export default function Marketplace() {
   const [loading, setLoading] = useState(true)
   const chainId = chain?.id;
 
-  console.log('chain:', chain)
+  // console.log('chain:', chain)
   
   // Get contract addresses only if chainId is available
   const contractAddresses = chainId ? getContractAddresses(chainId) : null;
@@ -69,7 +77,10 @@ export default function Marketplace() {
 
   console.info('chainId: ', chainId)
   // Read contract data
-  const { data: totalTickets, error: totalTicketsError } = useReadContract({
+  const { 
+    // data: totalTickets, 
+    error: totalTicketsError 
+  } = useReadContract({
     address: eventTicketing as Address,
     abi: eventTicketingAbi,
     functionName: 'getTotalTickets',
@@ -203,51 +214,49 @@ export default function Marketplace() {
 
   const filteredEvents = getEventsByTab()
 
-  const renderConnectWalletPrompt = () => (
-    <div className="text-center py-12">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-        <svg
-          className="h-6 w-6 text-blue-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-          />
-        </svg>
-      </div>
-      <h3 className="mt-2 text-sm font-medium text-gray-900">Connect your wallet</h3>
-      <p className="mt-1 text-sm text-gray-500">
-        Connect your wallet to create events or purchase tickets
-      </p>
-      <div className="mt-6">
-        <Button
-          onClick={() => router.push('/')}
-          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Connect Wallet
-        </Button>
-      </div>
-    </div>
-  )
+  // const renderConnectWalletPrompt = () => (
+  //   <div className="text-center py-12">
+  //     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1c398e]/30 mb-4">
+  //       <svg
+  //         className="h-8 w-8 text-[#51a2ff]"
+  //         fill="none"
+  //         viewBox="0 0 24 24"
+  //         stroke="currentColor"
+  //       >
+  //         <path
+  //           strokeLinecap="round"
+  //           strokeLinejoin="round"
+  //           strokeWidth={2}
+  //           d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+  //         />
+  //       </svg>
+  //     </div>
+  //     <h3 className="text-lg font-medium text-white">Connect your wallet</h3>
+  //     <p className="mt-2 text-[#a1a1a9]">
+  //       Connect your wallet to create events or purchase tickets
+  //     </p>
+  //     <div className="mt-6">
+  //       <Button
+  //         onClick={() => router.push('/')}
+  //         className="bg-linear-to-r from-[#1c398e] to-[#51a2ff] hover:from-[#1c398e]/90 hover:to-[#51a2ff]/90 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/20"
+  //       >
+  //         Connect Wallet
+  //       </Button>
+  //     </div>
+  //   </div>
+  // )
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900/10 to-slate-900 text-foreground px-20">
+    <div className="min-h-screen bg-[#0f172b] text-white">
       <div className="pb-16 px-4 pt-8">
         <div className="container mx-auto max-w-7xl">
           {/* Hero Section */}
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-bold mb-4">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Event{" "}
-              <span className="bg-linear-to-r text-5xl from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                Marketplace
-              </span>
+              <span className="text-[#51a2ff]">Marketplace</span>
             </h1>
-            <p className="text-base text-slate-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base text-[#a1a1a9] max-w-4xl mx-auto leading-relaxed">
               Discover amazing events and secure your NFT tickets on the blockchain. 
               All transactions are verified, fraud-proof, and powered by smart contracts.
             </p>
@@ -255,14 +264,21 @@ export default function Marketplace() {
 
           {/* Network Warning */}
           {!isCorrectNetwork && (
-            <div className="mb-4">
-              <Card className="bg-linear-to-r from-orange-900/30 to-red-900/30 border-orange-500/50">
+            <div className="mb-6">
+              <Card className="bg-[#1c398e]/20 border-[#1c398e]/50">
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-54w-4 text-orange-400 shrink-0" />
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 text-[#51a2ff] shrink-0" />
                     <div>
-                      <p className="text-orange-200 font-medium text-base">{!isConnected ? `Connect Wallet` : `Wrong Network`}</p>
-                      <p className="text-orange-300 text-xs">{!isConnected ? `Connect your wallet to interact with events.` : `Please switch to Celo or Base to interact with events.`}</p>
+                      <p className="text-white font-medium">
+                        {!isConnected ? `Connect Wallet` : `Wrong Network`}
+                      </p>
+                      <p className="text-[#a1a1a9] text-sm">
+                        {!isConnected 
+                          ? `Connect your wallet to interact with events.` 
+                          : `Please switch to Celo or Base to interact with events.`
+                        }
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -276,17 +292,17 @@ export default function Marketplace() {
               {/* Search Bar */}
               <div className="flex-1 w-full">
                 <div className="relative group">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 text-slate-400 w-4 h-4 group-focus-within:text-purple-400 transition-colors" />
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 text-[#a1a1a9] w-4 h-4 group-focus-within:text-[#51a2ff] transition-colors" />
                   <Input
                     placeholder="Search events by name, location, or category..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-12 h-10 text-xs font-mono bg-slate-800/50 border-slate-600 focus:border-purple-400 focus:ring-purple-400/20 text-white backdrop-blur-sm"
+                    className="pl-12 h-12 text-sm bg-[#1c398e]/10 border-[#1c398e]/30 focus:border-[#51a2ff] focus:ring-[#51a2ff]/20 text-white placeholder-[#a1a1a9] backdrop-blur-sm rounded-lg"
                   />
                   {searchTerm && (
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                      <Badge variant="secondary" className="text-sm font-mono bg-purple-500/20 text-purple-300 border-purple-500/30">
-                        {filteredEvents.length} results
+                      <Badge className="bg-[#1c398e] hover:bg-[#1c398e]/90 text-[#51a2ff] border-[#1c398e]/50">
+                        {filteredEvents.length} {filteredEvents.length === 1 ? 'result' : 'results'}
                       </Badge>
                     </div>
                   )}
@@ -298,25 +314,25 @@ export default function Marketplace() {
                 <Button
                   variant={sortBy === "trending" ? "default" : "outline"}
                   onClick={() => setSortBy("trending")}
-                  className={`h-10 transition-all duration-200 ${
+                  className={`h-12 px-6 transition-all duration-200 rounded-lg ${
                     sortBy === "trending"
-                      ? "bg-purple-600 hover:bg-purple-500 hover:shadow-lg"
-                      : "border-slate-600 text-slate-300 hover:border-purple-500 hover:text-white"
+                      ? "bg-linear-to-r from-[#1c398e] to-[#51a2ff] text-white hover:shadow-lg hover:shadow-[#51a2ff]/20"
+                      : "border-[#1c398e]/50 text-[#a1a1a9] hover:border-[#51a2ff] hover:text-white"
                   }`}
                 >
-                  <TrendingUp className="w-4 h-4 mr-1" />
+                  <TrendingUp className="w-4 h-4 mr-2" />
                   Trending
                 </Button>
                 <Button
                   variant={sortBy === "recent" ? "default" : "outline"}
                   onClick={() => setSortBy("recent")}
-                  className={`h-10 transition-all duration-200 ${
+                  className={`h-12 px-6 transition-all duration-200 rounded-lg ${
                     sortBy === "recent"
-                      ? "bg-cyan-600 hover:bg-cyan-500 hover:shadow-lg"
-                      : "border-slate-600 text-slate-300 hover:border-blue-500 hover:text-white"
+                      ? "bg-linear-to-r from-[#1c398e] to-[#51a2ff] text-white hover:shadow-lg hover:shadow-[#51a2ff]/20"
+                      : "border-[#1c398e]/50 text-[#a1a1a9] hover:border-[#51a2ff] hover:text-white"
                   }`}
                 >
-                  <Clock className="w-4 h-4 mr-1" />
+                  <Clock className="w-4 h-4 mr-2" />
                   Recent
                 </Button>
               </div>
@@ -324,12 +340,12 @@ export default function Marketplace() {
           </div>
 
           {/* Event Tabs */}
-          <div className="flex justify-center mb-6">
-            <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-2 border border-slate-600/50 shadow-xl">
+          <div className="flex justify-center mb-8">
+            <div className="bg-[#1c398e]/10 backdrop-blur-sm rounded-xl p-1 border border-[#1c398e]/30">
               <div className="flex flex-wrap gap-1">
                 {[
-                  { key: "upcoming", label: "Upcoming", color: "purple" },
-                  { key: "passed", label: "Passed", color: "green" },
+                  { key: "upcoming", label: "Upcoming", color: "blue" },
+                  { key: "passed", label: "Passed", color: "gray" },
                   { key: "canceled", label: "Canceled", color: "red" },
                   { key: "closed", label: "Closed", color: "gray" }
                 ].map((tab) => {
@@ -340,25 +356,19 @@ export default function Marketplace() {
                       key={tab.key}
                       variant={isActive ? "default" : "ghost"}
                       onClick={() => setActiveTab(tab.key)}
-                      className={`h-8 px-6 transition-all duration-200 ${
+                      className={`h-10 px-6 transition-all duration-200 rounded-lg ${
                         isActive
-                          ? `bg-linear-to-r ${
-                              tab.color === "purple" ? "from-purple-800 to-purple-700" :
-                              tab.color === "green" ? "from-green-800 to-green-700" :
-                              tab.color === "red" ? "from-red-800 to-red-700" :
-                              "from-gray-800 to-gray-700"
-                            } shadow-lg text-white`
-                          : "text-slate-300 hover:text-white hover:bg-slate-700/50"
+                          ? `bg-[#1c398e] text-white hover:bg-[#1c398e]/90`
+                          : "text-[#a1a1a9] hover:bg-[#1c398e]/20 hover:text-white"
                       }`}
                     >
                       {tab.label}
                       {count > 0 && (
                         <Badge 
-                          variant="secondary" 
                           className={`ml-2 text-xs ${
                             isActive 
                               ? "bg-white/20 text-white" 
-                              : "bg-slate-600/50 text-slate-300"
+                              : "bg-[#1c398e]/30 text-[#a1a1a9]"
                           }`}
                         >
                           {count}
@@ -374,13 +384,38 @@ export default function Marketplace() {
           {/* Loading State */}
           {loading && (
             <div className="text-center p-12">
-              <Card className="bg-slate-800/50 border-purple-500/30 backdrop-blur-sm max-w-md mx-auto">
-                <CardContent className="p-4">
-                  <div className="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <h3 className="text-lg font-semibold text-white mb-1">Loading Events</h3>
-                  <p className="text-slate-300">Fetching latest events from the blockchain...</p>
+              <Card className="bg-[#1c398e]/10 border-[#1c398e]/30 backdrop-blur-sm max-w-md mx-auto">
+                <CardContent className="p-6">
+                  <div className="w-10 h-10 border-4 border-[#51a2ff] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Loading Events</h3>
+                  <p className="text-[#a1a1a9]">Fetching latest events from the blockchain...</p>
                 </CardContent>
               </Card>
+            </div>
+          )}
+
+          {/* No Results */}
+          {!loading && filteredEvents.length === 0 && (
+            <div className="text-center py-16">
+              <div className="mx-auto w-16 h-16 bg-[#1c398e]/20 rounded-full flex items-center justify-center mb-4">
+                <Search className="h-8 w-8 text-[#51a2ff]" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">No events found</h3>
+              <p className="text-[#a1a1a9] max-w-md mx-auto">
+                {searchTerm 
+                  ? `No events match your search for "${searchTerm}". Try different keywords.`
+                  : `There are currently no ${activeTab} events. Check back later!`
+                }
+              </p>
+              {searchTerm && (
+                <Button 
+                  variant="outline" 
+                  className="mt-4 border-[#1c398e] text-[#a1a1a9] hover:bg-[#1c398e]/20 hover:border-[#51a2ff] hover:text-white"
+                  onClick={() => setSearchTerm('')}
+                >
+                  Clear search
+                </Button>
+              )}
             </div>
           )}
 
@@ -394,125 +429,41 @@ export default function Marketplace() {
                   {activeTab === "canceled" && "Canceled Events"}
                   {activeTab === "closed" && "Closed Events"}
                   {searchTerm && (
-                    <span className="text-purple-400 ml-2">
+                    <span className="text-[#51a2ff] ml-2">
                       matching &quot;{searchTerm}&quot;
                     </span>
                   )}
                 </h2>
-                <Badge variant="outline" className="border-purple-500/50 text-purple-300">
-                  {filteredEvents.length} {filteredEvents.length === 1 ? 'event' : 'events'}
-                </Badge>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredEvents.map((event) => (
-                  <EventCard key={event.id} event={event} onViewDetails={() => router.push(`/marketplace/${event.id}`)} onPurchase={() => {
-                    if (!isConnected) {
-                      toast.info('Please connect your wallet to purchase tickets');
-                      return;
-                    }
-                    router.push(`/marketplace/${event.id}`);
-                  }} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!loading && filteredEvents.length === 0 && (
-            <div className="text-center py-16">
-              <div className="mb-8">
-                <div className="w-20 h-20 rounded-full bg-linear-to-r from-purple-500/20 to-pink-500/20 flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-10 h-10 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">No Events Found</h3>
-                <p className="text-base text-slate-400 max-w-md mx-auto">
-                  {searchTerm 
-                    ? `No events match your search for "${searchTerm}"`
-                    : `No ${activeTab} events are currently available`
-                  }
+                <p className="text-sm text-[#a1a1a9]">
+                  {filteredEvents.length} {filteredEvents.length === 1 ? 'event' : 'events'} found
                 </p>
               </div>
-              
-              {searchTerm && (
-                <Button
-                  onClick={() => setSearchTerm("")}
-                  className="bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
-                >
-                  Clear Search
-                </Button>
-              )}
-              
-              {!searchTerm && events.length === 0 && (
-                <Card className="bg-slate-800/30 border-slate-600/50 max-w-lg mx-auto mt-8">
-                  <CardContent className="p-6">
-                    <p className="text-slate-400 mb-4">Be the first to create an event!</p>
-                    {isConnected ? (
-                      <Button
-                        onClick={() => router.push("/create-event")}
-                        className="bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
-                      >
-                        Create Event
-                      </Button>
-                    ) : (
-                      renderConnectWalletPrompt()
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          )}
-          
-          {/* Platform Stats */}
-          {!loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 border-t border-slate-600/50 pt-8">
-              <Card className="bg-slate-800/80 border-slate-700 hover:border-purple-500 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
-                <CardContent className="p-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-500/30 transition-colors">
-                    <Calendar className="h-6 w-6 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
-                    {totalTickets ? Number(totalTickets) : 0}
-                  </div>
-                  <div className="text-slate-400 text-sm font-medium group-hover:text-slate-300 transition-colors">Total Events Created</div>
-                </CardContent>
-              </Card>
 
-              <Card className="bg-slate-800/80 border-slate-700 hover:border-green-500 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20">
-                <CardContent className="p-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3 group-hover:bg-green-500/30 transition-colors">
-                    <TrendingUp className="h-6 w-6 text-green-400 group-hover:text-green-300 transition-colors" />
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2 group-hover:text-green-300 transition-colors">
-                    {events.filter(e => e.status === "upcoming").length}
-                  </div>
-                  <div className="text-slate-400 text-sm font-medium group-hover:text-slate-300 transition-colors">Active Events</div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/80 border-slate-700 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
-                <CardContent className="p-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500/30 transition-colors">
-                    <Users className="h-6 w-6 text-blue-400 group-hover:text-blue-300 transition-colors" />
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">
-                    {events.reduce((sum, e) => sum + e.attendees, 0).toLocaleString()}
-                  </div>
-                  <div className="text-slate-400 text-sm font-medium group-hover:text-slate-300 transition-colors">Total Capacity</div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/80 border-slate-700 hover:border-yellow-500 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20">
-                <CardContent className="p-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center mx-auto mb-3 group-hover:bg-yellow-500/30 transition-colors">
-                    <Sparkles className="h-6 w-6 text-yellow-400 group-hover:text-yellow-300 transition-colors" />
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors">
-                    Zero
-                  </div>
-                  <div className="text-slate-400 text-sm font-medium group-hover:text-slate-300 transition-colors">Fraud Cases</div>
-                </CardContent>
-              </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredEvents.map((event) => (
+                  <EventCard 
+                    key={event.id} 
+                    event={event} 
+                    onViewDetails={function (): void {
+                      throw new Error("Function not implemented.")
+                    } } onPurchase={function (): void {
+                      throw new Error("Function not implemented.")
+                    } }
+                    // id={event.id}
+                    // title={event.eventTitle}
+                    // price={event.price}
+                    // date={event.date}
+                    // location={event.location}
+                    // image={event.image}
+                    // attendees={event.attendees}
+                    // ticketsLeft={event.ticketsLeft}
+                    // status={event.status}
+                    // category={event.category}
+                    // trending={event.trending}
+                    // onClick={() => router.push(`/event/${event.id}`)}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
