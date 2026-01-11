@@ -7,6 +7,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { format } from "date-fns"
 import { TicketActions } from "./TicketActions"
 import type { NFTTicketDisplay } from "@/app/profile/page"
+import { useConnection } from "wagmi"
+import { ChainId } from "@/lib/addressAndAbi"
 
 type TicketCardProps = {
   ticket: NFTTicketDisplay
@@ -15,8 +17,11 @@ type TicketCardProps = {
 }
 
 export function TicketCard({ ticket, onAction, isLoading = false }: TicketCardProps) {
+  const { chainId } = useConnection()
   const eventDate = new Date(ticket.eventTimestamp * 1000)
   const isUpcoming = ticket.status === 'upcoming'
+
+  const explorerUrl = chainId === ChainId.BASE ? 'base.blockscout.com' : 'celo.blockscout.com'
   
   if (isLoading) {
     return (
@@ -84,7 +89,7 @@ export function TicketCard({ ticket, onAction, isLoading = false }: TicketCardPr
               variant="ghost" 
               size="sm" 
               className="text-xs h-7 px-2 text-[#a1a1a9] hover:text-[#51a2ff] hover:bg-[#51a2ff]/10"
-              onClick={() => window.open(`https://explorer.celo.org/tx/${ticket.txHash}`, '_blank')}
+              onClick={() => window.open(`https://${explorerUrl}/tx/${ticket.txHash}`, '_blank')}
             >
               <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
               View on Explorer

@@ -121,37 +121,47 @@ export default function ProfilePage() {
           `${ETHERSCAN_API}?apikey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY}&chainid=${CHAIN_ID}&module=account&action=txlist&address=${eventTicketingAddress}`,
           options
         )
-
         const data = await res.json()
-        console.log('data:', data.result);
+        console.log('Fetched transactions:', data.result);
 
         if (data.status === '1' && Array.isArray(data.result)) {
-          // Create a map of ticket IDs to transaction hashes
           const txMap: Record<string, string> = {}
-          for ( const tx of data.result ) {
-            if (tx.to?.toLowerCase() === eventTicketingAddress?.toLowerCase()) continue;
+          
+          for (const tx of data.result) {
+            // Check if this is a transaction to our contract
+            if (tx.to?.toLowerCase() !== eventTicketingAddress?.toLowerCase()) continue;
 
             // Check if this is a register transaction (function selector 0xf207564e)
             if (tx.input.startsWith('0xf207564e')) {
-              // The ticketId is the first parameter after the function selector
-              // For function register(uint256 tier), the ticketId is in the first 32 bytes after the selector
-              const ticketIdHex = tx.input.slice(10, 74); // 10 = 2 (0x) + 8 (function selector)
-              const ticketId = parseInt(ticketIdHex, 16).toString();
-          
-              if (ticketId && registrationMap[ticketId]) {
-                txMap[ticketId] = tx.hash;
+              try {
+                // The ticketId is the first parameter after the function selector
+                // For function register(uint256 tier), the ticketId is in the first 32 bytes after the selector
+                const ticketIdHex = tx.input.slice(10, 74); // 10 = 2 (0x) + 8 (function selector)
+                const ticketId = parseInt(ticketIdHex, 16).toString();
+                
+                // Only add if we have this ticket in our registration map
+                if (ticketId && registrationMap[ticketId]) {
+                  txMap[ticketId] = tx.hash;
+                  console.log(`Mapped ticket ${ticketId} to tx ${tx.hash}`);
+                }
+              } catch (error) {
+                console.error('Error processing transaction:', tx.hash, error);
               }
             }
           }
-
-          setTicketTransactions(txMap)
+          
+          console.log('Final transaction map:', txMap);
+          setTicketTransactions(prev => ({
+            ...prev,
+            ...txMap
+          }));
         }
       } catch (error) {
-        console.error('Error fetching ticket tx hashes:', error)
+        console.error('Error fetching ticket tx hashes:', error);
       }
     };
     fetchTicketTxHashes()
-  }, [address, eventTicketingAddress, CHAIN_ID, registrationMap])
+  }, [address, eventTicketingAddress, CHAIN_ID, registrationMap, ticketTransactions])
 
   // ====================================
 
