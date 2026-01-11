@@ -262,7 +262,7 @@ export default function EventDetailPage() {
     }
 
     // Check network
-    if (![ChainId.CELO_SEPOLIA, ChainId.BASE_SEPOLIA, ChainId.BASE, ChainId.CELO].includes(chainId as number)) {
+    if (![ChainId.BASE, ChainId.CELO].includes(chainId as number)) {
       toast.error("⚠️ Please switch to Celo or Base network")
       return
     }
@@ -273,7 +273,7 @@ export default function EventDetailPage() {
       // Convert price from ETH to Wei for the contract call
       const priceInWei = parseEther(events.price)
       
-      toast.info(`💰 Purchasing ticket for "${events.eventName}" - Please confirm the transaction in your wallet. Ticket price: ${events.price} ${chainId === ChainId.CELO_SEPOLIA || chainId === ChainId.CELO ? "CELO" : "ETH"}`)
+      toast.info(`💰 Purchasing ticket for "${events.eventName}" - Please confirm the transaction in your wallet. Ticket price: ${events.price} ${chainId === ChainId.BASE ? "ETH" : "CELO"}`)
       
       register(BigInt(events.id), priceInWei)
     } catch (error) {
@@ -332,7 +332,7 @@ export default function EventDetailPage() {
   }, [writeError]);
 
   const isProcessing = purchasing || isPending || isConfirming
-  const isCorrectNetwork = chainId === ChainId.CELO_SEPOLIA || chainId === ChainId.BASE_SEPOLIA || chainId === ChainId.BASE || chainId === ChainId.CELO
+  const isCorrectNetwork = chainId === ChainId.BASE || chainId === ChainId.CELO
 
   if (isLoading) {
     return (
@@ -495,7 +495,7 @@ export default function EventDetailPage() {
                     <div>
                       <p className="text-slate-300 text-sm">Price per ticket</p>
                       <p className="text-2xl font-bold bg-linear-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                        {events?.price} {chainId === ChainId.CELO_SEPOLIA || chainId === ChainId.CELO ? "CELO" : "ETH"}
+                        {events?.price} {chainId === ChainId.BASE ? "ETH" : "CELO"}
                       </p>
                     </div>
                     <div className="text-right">

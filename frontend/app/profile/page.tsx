@@ -16,14 +16,7 @@ import {
   QrCodeModal,
 } from "@/components/profile"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { createPublicClient, http } from 'viem'
-import { base, celo } from 'viem/chains'
-
-export const publicClient = createPublicClient({
-
-  chain: base || celo,
-  transport: http("https://base-mainnet.g.alchemy.com/v2/3v_hKHYxum5Uzvp0j1Zwy")
-})
+import { usePublicClient } from "wagmi"
 
 export type NFTTicketDisplay = {
   id: string
@@ -47,7 +40,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true)
 
   const { address } = useConnection()
-  // const publicClient = usePublicClient()
+  const publicClient = usePublicClient()
 
   const {
     useGetRecentTickets,
@@ -104,7 +97,7 @@ export default function ProfilePage() {
     }
 
     fetchRegistrationStatuses()
-  }, [address, allTickets, eventTicketingAddress])
+  }, [address, allTickets, eventTicketingAddress, publicClient])
 
   const symbol = connectedChain?.id === ChainId.BASE ? 'ETH' : 'CELO'
 
@@ -204,6 +197,11 @@ export default function ProfilePage() {
     setSelectedTicket(ticket)
     setCurrentAction(action)
   }
+  const handleActionWrapper = (action: string, ticket: NFTTicketDisplay) => {
+    if (['view', 'transfer', 'qr', 'resale'].includes(action)) {
+      handleAction(action as TicketAction, ticket);
+    }
+  };
 
   const handleCloseModal = () => {
     setSelectedTicket(null)
@@ -250,7 +248,7 @@ export default function ProfilePage() {
               <CardContent>
                 <TicketList
                   tickets={userTickets}
-                  onAction={handleAction}
+                  onAction={handleActionWrapper}
                   isLoading={isLoading || isLoadingTickets}
                 />
               </CardContent>
@@ -271,7 +269,10 @@ export default function ProfilePage() {
           <TransferTicketModal
             isOpen={currentAction === 'transfer'}
             onClose={handleCloseModal}
-            ticketId={selectedTicket.tokenId}
+            ticketId={selectedTicket.id}
+            eventName={selectedTicket.eventTitle}
+            isActive={true}
+            onTransferSuccess={handleCloseModal}
           />
 
           <QrCodeModal
@@ -282,8 +283,11 @@ export default function ProfilePage() {
           />
 
           <ListTicketModal
+            // tokenId={selectedTicket.tokenId}
             isOpen={currentAction === 'resale'}
             onClose={handleCloseModal}
+            // eventName={selectedTicket.eventTitle}
+            // onListSuccess={handleCloseModal}
             onList={handleListTicket}
             isLoading={isListing}
           />
