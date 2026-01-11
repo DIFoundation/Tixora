@@ -36,6 +36,8 @@ interface MarketplaceEvent {
 
 interface EventCardProps {
   event: MarketplaceEvent
+  onViewDetails: () => void
+  onPurchase: () => void
 }
 
 export function EventCard({ event }: EventCardProps) {
@@ -44,11 +46,11 @@ export function EventCard({ event }: EventCardProps) {
   const [purchasing, setPurchasing] = useState(false)
   const [showVerification, setShowVerification] = useState(false)
   const [verificationComplete, setVerificationComplete] = useState(false)
-  const [imageError, setImageError] = useState(false)
+  // const [imageError, setImageError] = useState(false)
   const { address, isConnected, chain } = useConnection()
-  const chainId = chain?.id || ChainId.CELO_SEPOLIA || ChainId.BASE || ChainId.BASE_SEPOLIA;
+  const chainId = chain?.id || ChainId.CELO || ChainId.BASE;
   const { eventTicketing } = getContractAddresses(chainId)
-  const { useGetTotalTickets, useIsRegistered } = useEventTicketingGetters()
+  const { useIsRegistered } = useEventTicketingGetters()
   const { data: currentBalance } = useBalance()
   
   const { isLoading: checkingRegistration, data: isRegistered } = useIsRegistered(BigInt(event.id), address)
@@ -57,7 +59,7 @@ export function EventCard({ event }: EventCardProps) {
     hash,
   })
 
-  const price = chainId === ChainId.BASE || chainId === ChainId.BASE_SEPOLIA ? "BASE" : "CELO"
+  const price = chainId === ChainId.BASE ? "BASE" : "CELO"
 
   const getStatusBadge = (event: MarketplaceEvent) => {
     if (event.status === "passed") {
@@ -85,10 +87,10 @@ export function EventCard({ event }: EventCardProps) {
     proceedWithTicketPurchase()
   }
 
-  const handleVerificationError = () => {
-    toast.error("Identity verification failed. Please try again.")
-    setPurchasing(false)
-  }
+  // const handleVerificationError = () => {
+  //   toast.error("Identity verification failed. Please try again.")
+  //   setPurchasing(false)
+  // }
 
   const handlePurchaseClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -191,7 +193,7 @@ export function EventCard({ event }: EventCardProps) {
   }, [receiptError])
 
   // Check if user is on the correct network
-  const isCorrectNetwork = chainId === ChainId.CELO_SEPOLIA || ChainId.BASE_SEPOLIA || ChainId.BASE || ChainId.BASE_SEPOLIA
+  const isCorrectNetwork = chainId === ChainId.BASE || ChainId.CELO
 
   const isProcessing = purchasing || isPending || isConfirming
 
@@ -205,7 +207,7 @@ export function EventCard({ event }: EventCardProps) {
 
   const handleNetworkSwitch = (e: React.MouseEvent) => {
     e.stopPropagation()
-    toast.error(`Please switch to ${price} Sepolia testnet ${chainId === ChainId.BASE_SEPOLIA || chainId === ChainId.BASE ? "Base" : "Celo"} to purchase tickets`)
+    toast.error(`Please switch to ${price} Sepolia testnet ${chainId === ChainId.BASE ? "Base" : "Celo"} to purchase tickets`)
   }
 
   const formatEventDate = (dateString: string) => {
@@ -240,7 +242,7 @@ export function EventCard({ event }: EventCardProps) {
             alt={event.eventTitle}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            onError={() => setImageError(true)}
+            // onError={() => setImageError(true)}
             priority={false}
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
