@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { useConnection } from 'wagmi'
-import { formatEther, keccak256, toBytes } from 'viem'
+import { formatEther } from 'viem'
 import { toast } from "sonner"
 import { useEventTicketingGetters } from "@/hooks/useEventTicketing"
 import { useResaleMarketSetters } from "@/hooks/useResaleMarket"
@@ -123,32 +123,33 @@ export default function ProfilePage() {
         )
 
         const data = await res.json()
-
         console.log('data:', data.result);
 
         if (data.status === '1' && Array.isArray(data.result)) {
           // Create a map of ticket IDs to transaction hashes
           const txMap: Record<string, string> = {}
-          data.result.forEach((tx: any) => {
-            // Assuming the ticket ID is in the input data or you can extract it from the transaction
-            // You might need to adjust this based on how your contract emits events
-            if (tx.to?.toLowerCase() === eventTicketingAddress?.toLowerCase()) {
-              // This is a simplified example - you'll need to extract the actual ticket ID from the transaction
-              // For now, we'll just use the transaction hash for the first ticket as an example
-              const ticketId = Object.keys(registrationMap)[0] // This is just an example
-              if (ticketId) {
-                txMap[ticketId] = tx.hash
+          for ( const tx of data.result ) {
+            if (tx.to?.toLowerCase() === eventTicketingAddress?.toLowerCase()) continue;
+
+            // Check if this is a register transaction (function selector 0xf207564e)
+            if (tx.input.startsWith('0xf207564e')) {
+              // The ticketId is the first parameter after the function selector
+              // For function register(uint256 tier), the ticketId is in the first 32 bytes after the selector
+              const ticketIdHex = tx.input.slice(10, 74); // 10 = 2 (0x) + 8 (function selector)
+              const ticketId = parseInt(ticketIdHex, 16).toString();
+          
+              if (ticketId && registrationMap[ticketId]) {
+                txMap[ticketId] = tx.hash;
               }
             }
-          })
+          }
+
           setTicketTransactions(txMap)
         }
-
-
       } catch (error) {
         console.error('Error fetching ticket tx hashes:', error)
       }
-    }
+    };
     fetchTicketTxHashes()
   }, [address, eventTicketingAddress, CHAIN_ID, registrationMap])
 
