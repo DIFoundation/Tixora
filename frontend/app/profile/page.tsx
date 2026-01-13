@@ -24,11 +24,13 @@ export type NFTTicketDisplay = {
   eventTitle: string
   eventTimestamp: number
   location: string
+  venue: string
   status: 'upcoming' | 'past'
   qrCode: string
   price: string
   purchaseDate: string
   txHash: string | null
+  hash?: string
 }
 
 type TicketAction = "view" | "transfer" | "qr" | "resale"
@@ -174,10 +176,12 @@ export default function ProfilePage() {
           eventTitle: ticket.eventName,
           eventTimestamp: Number(ticket.eventTimestamp),
           location: ticket.location,
+          venue: ticket.location || "Venue not specified",
           status: isPast ? "past" as const : "upcoming" as const,
           qrCode: ticket.id.toString(),
+          hash: ticketTransactions[ticket.id.toString()] || ticket.id.toString(),
           price: formatEther(ticket.price) + " " + symbol,
-          purchaseDate: new Date(Number(ticket.eventTimestamp) * 1000).toLocaleDateString(),
+          purchaseDate: ticketTransactions[ticket.eventTimestamp.toString()] ? new Date(Number(ticket.eventTimestamp) * 1000).toLocaleDateString() : null,
           txHash: ticketTransactions[ticket.id.toString()] || null
         }
       })

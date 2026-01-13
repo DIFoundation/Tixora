@@ -15,6 +15,9 @@ type QrCodeModalProps = {
     id: string
     eventTitle: string
     qrCode: string
+    venue?: string
+    hash?: string
+    date?: string
   } | null
   isOpen: boolean
   onClose: () => void
@@ -31,7 +34,21 @@ export function QrCodeModal({ ticket, isOpen, onClose }: QrCodeModalProps) {
     const generateQrCode = async () => {
       try {
         setIsLoading(true)
-        const dataUrl = await QRCode.toDataURL(ticket.qrCode, {
+        
+        // Convert the object to a JSON string
+        // const qrContent = JSON.stringify(qrData)
+        const qrContent = `
+          Event: ${ticket.eventTitle}
+          Venue: ${ticket.venue || 'Venue not specified'}
+          Ticket ID: ${ticket.id}
+          Ticket Hash: ${ticket.hash || 'Not available'}
+          Issued At: ${ticket.date || new Date().toLocaleString()}
+          `.trim()
+
+        
+
+        // Only use the event title for the QR code
+        const dataUrl = await QRCode.toDataURL(qrContent, {
           width: 400,
           margin: 2,
           color: {
