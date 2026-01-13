@@ -87,54 +87,51 @@ export function QrCodeModal({ ticket, isOpen, onClose }: QrCodeModalProps) {
             <p className="text-sm text-muted-foreground">Ticket ID: {ticket.id}</p>
           </div>
           
-          <div className="relative p-4 bg-white rounded-lg border-2 border-dashed border-gray-200">
+          <div className="relative p-4 bg-white rounded-lg border-2 border-dashed border-gray-200 w-64 h-64 flex items-center justify-center">
             {isLoading ? (
-              <div className="w-64 h-64 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-              </div>
-            ) : (
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            ) : qrCodeDataUrl ? (
               <Image 
                 src={qrCodeDataUrl} 
                 alt="Ticket QR Code" 
-                fill
-                className="w-64 h-64 object-contain"
+                width={240}
+                height={240}
+                className="object-contain"
+                priority
               />
+            ) : (
+              <div className="text-center text-sm text-muted-foreground">
+                Failed to generate QR code
+              </div>
             )}
-            
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-background px-4">
-              <span className="text-xs text-muted-foreground">Scan to verify</span>
-            </div>
           </div>
           
-          <div className="w-full space-y-2">
-            <Label htmlFor="ticket-link">Ticket Code</Label>
-            <div className="flex space-x-2">
-              <Input
-                id="ticket-link"
-                value={ticket.qrCode}
-                readOnly
-                className="font-mono text-xs"
+          <div className="w-full space-y-4">
+            <div className="flex items-center space-x-2">
+              <Input 
+                value={ticket?.qrCode || ''} 
+                readOnly 
+                className="flex-1" 
+                onClick={(e) => (e.target as HTMLInputElement).select()}
               />
               <Button 
+                type="button" 
                 variant="outline" 
-                size="icon"
+                size="icon" 
                 onClick={handleCopyLink}
-                disabled={copied}
+                disabled={!ticket?.qrCode}
               >
                 <Copy className="h-4 w-4" />
-                <span className="sr-only">Copy ticket code</span>
+                <span className="sr-only">Copy link</span>
               </Button>
             </div>
-          </div>
-          
-          <div className="flex justify-center w-full pt-2">
             <Button 
-              variant="outline" 
-              className="w-full sm:w-auto"
+              type="button" 
+              className="w-full"
               onClick={handleDownload}
               disabled={isLoading || !qrCodeDataUrl}
             >
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" />
               Download QR Code
             </Button>
           </div>
