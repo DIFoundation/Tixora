@@ -181,7 +181,7 @@ export default function ProfilePage() {
           qrCode: ticket.id.toString(),
           hash: ticketTransactions[ticket.id.toString()] || ticket.id.toString(),
           price: formatEther(ticket.price) + " " + symbol,
-          purchaseDate: new Date(Number(ticket.eventTimestamp) * 1000).toLocaleDateString(),
+          purchaseDate: ticketTransactions[ticket.eventTimestamp.toString()] ? new Date(Number(ticket.eventTimestamp) * 1000).toLocaleDateString() : null,
           txHash: ticketTransactions[ticket.id.toString()] || null
         }
       })

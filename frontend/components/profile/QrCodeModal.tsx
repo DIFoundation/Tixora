@@ -17,6 +17,7 @@ type QrCodeModalProps = {
     qrCode: string
     venue?: string
     hash?: string
+    date?: string
   } | null
   isOpen: boolean
   onClose: () => void
@@ -41,7 +42,7 @@ export function QrCodeModal({ ticket, isOpen, onClose }: QrCodeModalProps) {
           Venue: ${ticket.venue || 'Venue not specified'}
           Ticket ID: ${ticket.id}
           Ticket Hash: ${ticket.hash || 'Not available'}
-          Issued At: ${new Date().toLocaleString()}
+          Issued At: ${ticket.date || new Date().toLocaleString()}
           `.trim()
 
         
