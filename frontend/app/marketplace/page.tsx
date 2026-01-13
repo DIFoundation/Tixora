@@ -8,9 +8,6 @@ import {
   Search, 
   TrendingUp, 
   Clock, 
-  // Calendar, 
-  // Users, 
-  // Sparkles, 
   AlertCircle 
 } from "lucide-react"
 import { ChainId, eventTicketingAbi, getContractAddresses } from "@/lib/addressAndAbi"
