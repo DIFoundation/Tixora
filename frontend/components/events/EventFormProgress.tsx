@@ -74,21 +74,3 @@ export function EventFormProgress({
     </nav>
   )
 }
-
-export const STEPS = [
-  {
-    id: 1,
-    name: 'Event Details',
-    status: 'upcoming'
-  },
-  {
-    id: 2,
-    name: 'Ticket Setup',
-    status: 'upcoming'
-  },
-  {
-    id: 3,
-    name: 'Review & Create',
-    status: 'upcoming'
-  },
-]
