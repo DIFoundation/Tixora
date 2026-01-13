@@ -208,31 +208,6 @@ export function EventCard({ event }: EventCardProps) {
     router.push(`/marketplace/${event.id}`)
   }
 
-  // const handleNetworkSwitch = (e: React.MouseEvent) => {
-  //   e.stopPropagation()
-  //   toast.error(`Please switch to ${price} Sepolia testnet ${chainId === ChainId.BASE ? "Base" : "Celo"} to purchase tickets`)
-  // }
-
-  // const formatEventDate = (dateString: string) => {
-  //   try {
-  //     const date = new Date(dateString)
-  //     const now = new Date()
-  //     const diffTime = date.getTime() - now.getTime()
-  //     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-      
-  //     if (diffDays === 0) {
-  //       return "Today"
-  //     } else if (diffDays === 1) {
-  //       return "Tomorrow"
-  //     } else if (diffDays > 0 && diffDays <= 7) {
-  //       return `In ${diffDays} days`
-  //     }
-  //     return dateString
-  //   } catch {
-  //     return dateString
-  //   }
-  // }
-
   return (
     <Card 
       className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#51a2ff]/10 border-[#1c398e]/50 bg-[#060910] hover:border-[#51a2ff]/50"
