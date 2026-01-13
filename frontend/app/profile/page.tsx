@@ -278,8 +278,7 @@ export default function ProfilePage() {
           <QrCodeModal
             isOpen={currentAction === 'qr'}
             onClose={handleCloseModal}
-            qrCode={selectedTicket.qrCode}
-            eventName={selectedTicket.eventTitle}
+            ticket={selectedTicket}
           />
 
           <ListTicketModal
