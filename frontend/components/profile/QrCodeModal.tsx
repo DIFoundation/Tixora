@@ -34,19 +34,19 @@ export function QrCodeModal({ ticket, isOpen, onClose }: QrCodeModalProps) {
       try {
         setIsLoading(true)
         
-        // Create a structured object with the ticket information
-        const qrData = {
-          eventName: ticket.eventTitle,
-          venue: ticket.venue || 'Venue not specified',
-          ticketHash: ticket.hash || 'Ticket hash not specified',
-          ticketId: ticket.id,
-          timestamp: new Date().toISOString()
-        }
-        
         // Convert the object to a JSON string
-        const qrContent = JSON.stringify(qrData)
+        // const qrContent = JSON.stringify(qrData)
+        const qrContent = `
+          Event: ${ticket.eventTitle}
+          Venue: ${ticket.venue || 'Venue not specified'}
+          Ticket ID: ${ticket.id}
+          Ticket Hash: ${ticket.hash || 'Not available'}
+          Issued At: ${new Date().toLocaleString()}
+          `.trim()
+
         
-        // Generate QR code with the structured data
+
+        // Only use the event title for the QR code
         const dataUrl = await QRCode.toDataURL(qrContent, {
           width: 400,
           margin: 2,
