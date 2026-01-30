@@ -7,17 +7,16 @@ import Image from 'next/image'
 import { Calendar, MapPin, Users } from 'lucide-react'
 import { ChainId } from '@/lib/addressAndAbi'
 import { useConnection } from 'wagmi'
-import { useEventTicketingGetters } from '@/hooks/useEventTicketing'
+// import { useEventTicketingGetters } from '@/hooks/useEventTicketing'
 
 function FeatureEvents() {
   const router = useRouter()
   const { chain } = useConnection()
-  const { useGetTotalTickets } = useEventTicketingGetters()
+  // const { useGetTotalTickets } = useEventTicketingGetters()
 
   const symbol = chain?.id === ChainId.BASE ? "ETH" : "CELO" 
 
   // Placeholder data - replace with actual data from your contract
-  const {} = useEventTicketingGetters
   const featuredEvents = [
     {
       id: 1,
@@ -28,7 +27,7 @@ function FeatureEvents() {
       category: 'Conference',
       ticketsLeft: 42,
       attendees: 1500,
-      image: '/event-placeholder-1.jpg'
+      image: '/logo.png'
     },
     {
       id: 2,
@@ -39,7 +38,7 @@ function FeatureEvents() {
       category: 'Art',
       ticketsLeft: 12,
       attendees: 300,
-      image: '/event-placeholder-2.jpg'
+      image: '/logo.png'
     },
     {
       id: 3,
@@ -50,7 +49,7 @@ function FeatureEvents() {
       category: 'Music',
       ticketsLeft: 87,
       attendees: 5000,
-      image: '/event-placeholder-3.jpg'
+      image: '/logo.png'
     },
     {
       id: 4,
@@ -61,7 +60,7 @@ function FeatureEvents() {
       category: 'Workshop',
       ticketsLeft: 23,
       attendees: 200,
-      image: '/event-placeholder-4.jpg'
+      image: '/logo.png'
     }
   ]
 

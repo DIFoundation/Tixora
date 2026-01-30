@@ -28,7 +28,7 @@ export type NFTTicketDisplay = {
   status: 'upcoming' | 'past'
   qrCode: string
   price: string
-  purchaseDate: string
+  purchaseDate: string | null
   txHash: string | null
   hash?: string
 }
@@ -50,7 +50,7 @@ export default function ProfilePage() {
     // useGetStatus, 
     // useTicketsLeft 
   } = useEventTicketingGetters()
-  const { listTicket, isPending: isListing, isConfirmed: isListingConfirmed } = useResaleMarketSetters()
+  const { listTicket, isConfirmed: isListingConfirmed } = useResaleMarketSetters()
 
   // Fetch all recent tickets
   const { data: allTickets = [], isLoading: isLoadingTickets } = useGetRecentTickets()
@@ -226,6 +226,8 @@ export default function ProfilePage() {
     }
   }
 
+  console.log('handleListTicket', handleListTicket) //////////////////////////////////////
+
   const stats = useMemo(() => ({
     totalTickets: userTickets.length,
     upcomingEvents: userTickets.filter(t => t.status === 'upcoming').length,
@@ -251,7 +253,10 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent>
                 <TicketList
-                  tickets={userTickets}
+                  tickets={userTickets.map(t => ({
+                    ...t,
+                    price: t.price,
+                  }))}
                   onAction={handleActionWrapper}
                   isLoading={isLoading || isLoadingTickets}
                 />
@@ -273,7 +278,7 @@ export default function ProfilePage() {
           <TransferTicketModal
             isOpen={currentAction === 'transfer'}
             onClose={handleCloseModal}
-            ticketId={selectedTicket.id}
+            tokenId={BigInt(selectedTicket.id)}
             eventName={selectedTicket.eventTitle}
             isActive={true}
             onTransferSuccess={handleCloseModal}
@@ -286,13 +291,12 @@ export default function ProfilePage() {
           />
 
           <ListTicketModal
-            // tokenId={selectedTicket.tokenId}
             isOpen={currentAction === 'resale'}
             onClose={handleCloseModal}
-            // eventName={selectedTicket.eventTitle}
-            // onListSuccess={handleCloseModal}
-            onList={handleListTicket}
-            isLoading={isListing}
+            tokenId={selectedTicket.tokenId}
+            eventName={selectedTicket.eventTitle}
+            originalPrice={BigInt(selectedTicket.price)}
+            onListSuccess={handleCloseModal}
           />
         </>
       )}
