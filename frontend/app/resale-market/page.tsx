@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useConnection, useReadContract } from 'wagmi'
@@ -12,23 +12,23 @@ import { Card, CardContent } from "@/components/ui/card"
 import { toast } from "react-toastify"
 import { useResaleMarketGetters } from "@/hooks/useResaleMarket"
 
-interface TicketData {
-  id: number
-  creator: string
-  price: bigint
-  eventName: string
-  description: string
-  eventTimestamp: bigint
-  location: string
-  closed: boolean
-  canceled: boolean
-  metadata: string
-  maxSupply: bigint
-  sold: bigint
-  totalCollected: bigint
-  totalRefunded: bigint
-  proceedsWithdrawn: boolean
-}
+// interface TicketData {
+//   id: number
+//   creator: string
+//   price: bigint
+//   eventName: string
+//   description: string
+//   eventTimestamp: bigint
+//   location: string
+//   closed: boolean
+//   canceled: boolean
+//   metadata: string
+//   maxSupply: bigint
+//   sold: bigint
+//   totalCollected: bigint
+//   totalRefunded: bigint
+//   proceedsWithdrawn: boolean
+// }
 
 interface ResaleTicket {
   tokenId: bigint
@@ -51,17 +51,24 @@ export default function ResaleMarketPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   
-  const chainId = chain?.id || ChainId.CELO_SEPOLIA
-  const { eventTicketing, ticketNft } = getContractAddresses(chainId)
+  const chainId = chain?.id || ChainId.BASE || ChainId.CELO
+  const { 
+    // eventTicketing,
+    ticketNft,
+  } = getContractAddresses(chainId)
   
   const { useTicketNft, useEventTicketing } = useResaleMarketGetters()
   
   // Get contract addresses from resale market
-  const { data: ticketNftAddress } = useTicketNft()
-  const { data: eventTicketingAddress } = useEventTicketing()
+  const {
+    // data: ticketNftAddress,
+  } = useTicketNft()
+  const {
+    // data: eventTicketingAddress,
+  } = useEventTicketing()
 
   // Check if user is on the correct network
-  const isCorrectNetwork = chainId === ChainId.CELO_SEPOLIA || chainId === ChainId.BASE_SEPOLIA
+  const isCorrectNetwork = chainId === ChainId.BASE || chainId === ChainId.CELO
 
   // Get total supply of NFTs to iterate through
   const { data: totalSupply } = useReadContract({
@@ -72,7 +79,7 @@ export default function ResaleMarketPage() {
   })
 
   // Fetch all active listings
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     if (!totalSupply) return
 
     setRefreshing(true)
@@ -112,28 +119,28 @@ export default function ResaleMarketPage() {
               }
             }
           }
-        } catch (err) {
+        } catch {
           // Skip this token ID if there's an error
           console.log(`No listing for token ${tokenId}`)
         }
       }
 
       setListings(activeListings)
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching listings:", error)
       toast.error("Failed to load resale listings")
     } finally {
       setLoading(false)
       setRefreshing(false)
     }
-  }
+  }, [totalSupply])
 
   // Initial load
   useEffect(() => {
     if (totalSupply !== undefined) {
       fetchListings()
     }
-  }, [totalSupply])
+  }, [totalSupply, fetchListings])
 
   // Filter and sort listings
   const filteredListings = listings
