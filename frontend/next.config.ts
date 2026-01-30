@@ -15,9 +15,6 @@ const nextConfig: NextConfig = {
     //   "rimraf"
     // ]
   }, 
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   output: 'standalone'
 };
 
